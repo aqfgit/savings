@@ -1,5 +1,5 @@
 import React from 'react';
-import InputForm from './InputForm';
+import Input from './Input';
 
 class Spendings extends React.Component {
     constructor(props) {
@@ -10,6 +10,7 @@ class Spendings extends React.Component {
         return (
             <>
                 <h2>Spendings</h2>
+                <Input inputValue={this.inputValue} onChange={this.handleInputChange} onClick={this.addToBudget} name="Add to budget" />
             </>
         );
     }
