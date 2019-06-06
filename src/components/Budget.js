@@ -1,5 +1,6 @@
 import React from 'react';
-import InputForm from './InputForm';
+import Input from './Input';
+import Button from './Button';
 
 class Budget extends React.Component {
     constructor(props) {
@@ -31,7 +32,8 @@ class Budget extends React.Component {
         return (
             <>
                 <h2>My budget</h2>
-                <InputForm inputValue={this.inputValue} onChange={this.handleInputChange} onClick={this.addToBudget}/>
+                <Input inputValue={this.inputValue} onChange={this.handleInputChange} />
+                <Button onClick={this.addToBudget} name="Add to budget" />
                 <p>Balance: {this.state.balance}$</p>
             </>
         );
