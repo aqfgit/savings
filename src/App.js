@@ -1,7 +1,8 @@
 import React from 'react';
 import Budget from './components/Budget';
 import Spendings from './components/Spendings';
-import { Route, Link, BrowserRouter as Router } from 'react-router-dom';
+import PageNotfound from './components/PageNotFound';
+import { Route, Link, Switch, BrowserRouter as Router } from 'react-router-dom';
 
 function App() {
   return (
@@ -18,9 +19,12 @@ function App() {
           </li>
         </ul>
       </nav>
-      <Route exact path="/" component={Budget} />
-      <Route path="/budget" component={Budget} />
-      <Route path="/spendings" component={Spendings} />
+      <Switch>
+        <Route exact path="/" component={Budget} />
+        <Route path="/budget" component={Budget} />
+        <Route path="/spendings" component={Spendings} />
+        <Route component={PageNotfound} />
+      </Switch>
       </Router>
     </>
   );
