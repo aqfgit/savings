@@ -15,7 +15,8 @@ class Input extends React.Component {
     render() {
         return (
             <>
-                <input type="number" value={this.props.inputValue} onChange={this.handleChange}/>
+                <input type="number" value={this.props.inputValue} onChange={this.handleChange} type={this.props.dataType}/>
+                <label>{this.props.label}</label>
             </>
         );
     }
