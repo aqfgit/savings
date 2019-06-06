@@ -8,7 +8,7 @@ class Budget extends React.Component {
 
         this.state = {
             balance: 0,
-            inputValue: 0,
+            inputValue: '',
         }
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -32,7 +32,7 @@ class Budget extends React.Component {
         return (
             <>
                 <h2>My budget</h2>
-                <Input inputValue={this.inputValue} onChange={this.handleInputChange} />
+                <Input inputValue={this.state.inputValue} onChange={this.handleInputChange} dataType="number" />
                 <Button onClick={this.addToBudget} name="Add to budget" />
                 <p>Balance: {this.state.balance}$</p>
             </>
