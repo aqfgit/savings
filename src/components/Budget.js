@@ -1,6 +1,7 @@
 import React from "react";
 import Input from "./Input";
 import Button from "./Button";
+import { getLocalStorageItem } from '../utils/localStorage';
 
 class Budget extends React.Component {
   render() {
@@ -13,7 +14,7 @@ class Budget extends React.Component {
           dataType="number"
         />
         <Button onClick={this.props.addToBudget} name="Add to budget" />
-        <p>Balance: {this.props.balance}$</p>
+        <p>Balance: {getLocalStorageItem('balance') || 0}$</p>
       </>
     );
   }

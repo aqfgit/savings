@@ -3,13 +3,14 @@ import Budget from "./Budget";
 import Spendings from "./Spendings";
 import PageNotfound from "./PageNotFound";
 import { Route, Link, Switch, BrowserRouter as Router } from "react-router-dom";
+import { getLocalStorageItem, setLocalStorageItem} from '../utils/localStorage';
 
 class BudgetController extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      balance: 0,
+      balance: getLocalStorageItem('balance') || 0,
       inputValue: "",
       expenses: [],
       nameValue: "",
@@ -39,13 +40,17 @@ class BudgetController extends React.Component {
   addToBudget() {
     this.setState(prevState => ({
       balance: prevState.balance + prevState.inputValue
-    }));
+    }),
+    setLocalStorageItem('balance', this.state.balance + this.state.inputValue),
+    );
   }
 
   substractFromBudget(price) {
     this.setState(prevState => ({
       balance: prevState.balance - price
-    }));
+    }),
+    setLocalStorageItem('balance', this.state.balance - this.state.priceValue),
+    );
   }
 
   addExpense(name, category, price) {
@@ -54,7 +59,9 @@ class BudgetController extends React.Component {
     this.idCounter += 1;
     this.setState({
       expenses: expenses.concat({ name, category, price, id })
-    });
+    },
+    setLocalStorageItem('expenses', expenses.concat({ name, category, price, id })),
+    );
     this.substractFromBudget(price);
   }
 

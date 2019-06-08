@@ -1,10 +1,11 @@
 import React from "react";
 import Input from "./Input";
 import Button from "./Button";
+import { getLocalStorageItem, setLocalStorageItem} from '../utils/localStorage';
 
 class Spendings extends React.Component {
   render() {
-    const history = this.props.expenses;
+    const history = getLocalStorageItem('expenses') || [];
     const historyList = history.map(item => {
       return (
         <li key={item.id}>
