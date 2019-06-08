@@ -1,68 +1,61 @@
-import React from 'react';
-import Input from './Input';
-import Button from './Button';
-
+import React from "react";
+import Input from "./Input";
+import Button from "./Button";
 
 class Spendings extends React.Component {
-    constructor(props) {
-        super(props);
+  render() {
+    const history = this.props.expenses;
+    const historyList = history.map(item => {
+      return (
+        <li key={item.id}>
+          <span>{item.name} </span>
+          <span>{item.price}$ </span>
+          <span>{item.category}</span>
+        </li>
+      );
+    });
+    return (
+      <>
+        <h2>Spendings</h2>
+        <div>
+          <Input
+            inputValue={this.props.nameValue}
+            onChange={this.props.handleNameInputChange}
+            label="Name"
+            dataType="text"
+          />
+        </div>
+        <div>
+          <Input
+            inputValue={this.props.categoryValue}
+            onChange={this.props.handleCategoryInputChange}
+            label="Category"
+            dataType="text"
+          />
+        </div>
+        <div>
+          <Input
+            inputValue={this.props.priceValue}
+            onChange={this.props.handlePriceInputChange}
+            label="Price"
+            dataType="number"
+          />
+        </div>
+        <Button
+          onClick={() =>
+            this.props.addExpense(
+              this.props.nameValue,
+              this.props.categoryValue,
+              this.props.priceValue
+            )
+          }
+          name="Add an expense"
+        />
 
-        this.state = {
-            expenses: [],
-            nameValue: '',
-            categoryValue: '',
-            priceValue: 0,
-        };
-
-        this.handleNameInputChange = this.handleNameInputChange.bind(this);
-        this.handleCategoryInputChange = this.handleCategoryInputChange.bind(this);
-        this.handlePriceInputChange = this.handlePriceInputChange.bind(this);
-    }
-
-    addExpense(name, category, price) {
-        const expenses = this.state.expenses.slice();
-
-        this.setState({
-            expenses: expenses.concat({name, category, price}),
-        });
-    }
-
-    handleNameInputChange(value) {
-        this.setState({
-            nameValue: value,
-        });
-    }
-
-    handleCategoryInputChange(value) {
-        this.setState({
-            categoryValue: value,
-        });
-    }
-
-    handlePriceInputChange(value) {
-        const intValue = parseInt(value);
-        this.setState({
-            priceValue: intValue,
-        });
-    }
-
-    render() {
-        return (
-            <>
-                <h2>Spendings</h2>
-                <div>
-                    <Input inputValue={this.state.nameValue} onChange={this.handleNameInputChange} label="Name" dataType="text" />
-                </div>
-                <div>
-                    <Input inputValue={this.state.categoryValue} onChange={this.handleCategoryInputChange} label="Category" dataType="text" />
-                </div>
-                <div>
-                    <Input inputValue={this.state.priceValue} onChange={this.handlePriceInputChange} label="Price" dataType="number"/>
-                </div>
-                <Button onClick={this.addToBudget} name="Add to budget" />
-            </>
-        );
-    }
+        <ul>{historyList}</ul>
+      </>
+    );
+  }
 }
 
 export default Spendings;
