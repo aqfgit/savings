@@ -3,7 +3,7 @@ import Budget from "./Budget";
 import Spendings from "./Spendings";
 import PageNotfound from "./PageNotFound";
 import { Route, Link, Switch, BrowserRouter as Router } from "react-router-dom";
-import { getLocalStorageItem, setLocalStorageItem} from '../utils/localStorage';
+import { getLocalStorageItem, setLocalStorageItem, addDateToLocalStorage, getDateFromLocalStorage} from '../utils/localStorage';
 
 class BudgetController extends React.Component {
   constructor(props) {
@@ -12,10 +12,17 @@ class BudgetController extends React.Component {
     this.state = {
       balance: getLocalStorageItem('balance') || 0,
       inputValue: "",
-      expenses: [],
       nameValue: "",
       categoryValue: "",
-      priceValue: 0
+      priceValue: 0,
+      expenses: [],
+      incomes: [
+        {
+          name: 'Work',
+          value: 1000,
+          frequency: 1000,
+        },
+      ],
     };
 
     this.idCounter = 0;
@@ -30,6 +37,30 @@ class BudgetController extends React.Component {
     this.substractFromBudget = this.substractFromBudget.bind(this);
   }
 
+  
+
+  componentDidMount() {
+    const lastTime = getDateFromLocalStorage('lastTime') || new Date();
+    const timeDiff = Math.round((new Date() - lastTime) / 1000) || 1;
+    this.state.incomes.forEach((item) => {
+      this.addToBudget(item.value * timeDiff);
+      console.log(timeDiff)
+
+      const incomes = this.state.incomes.slice();
+      const currentIncome = incomes.find((income) => income.name === item.name);
+      const interval = setInterval(() => {
+        this.addToBudget(item.value);
+        addDateToLocalStorage('lastTime', new Date());
+      }, item.frequency);
+
+      currentIncome.interval = interval;
+      this.setState(prevState => ({
+        incomes: incomes,
+      }));
+    });
+  }
+
+ 
   handleInputChange(value) {
     const intValue = parseInt(value);
     this.setState({
@@ -37,11 +68,14 @@ class BudgetController extends React.Component {
     });
   }
 
-  addToBudget() {
+  addToBudget(value=null) {
+
+    const money = value ? value : this.state.inputValue;
+
     this.setState(prevState => ({
-      balance: prevState.balance + prevState.inputValue
+      balance: prevState.balance + money
     }),
-    setLocalStorageItem('balance', this.state.balance + this.state.inputValue),
+    setLocalStorageItem('balance', this.state.balance + money),
     );
   }
 
