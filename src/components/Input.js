@@ -6,6 +6,8 @@ class Input extends React.Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
+    
+
     handleChange(e) {
         this.props.onChange(e.target.value)
     }
