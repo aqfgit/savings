@@ -52,7 +52,7 @@ class Income extends React.Component {
       "beforeunload",
       this.saveStateToLocalStorage.bind(this)
     );
-    
+
     addDateToLocalStorage('lastIncomeUpadte', new Date());
     this.state.incomes.forEach((item) => {
       clearInterval(item.interval);
@@ -102,8 +102,7 @@ class Income extends React.Component {
       addDateToLocalStorage('lastTime', new Date());
     }, 1000);
 
-    const id = this.idCounter;
-    this.idCounter += 1;
+    const id = this.idCounter + 1;
 
     this.setState(prevState => ({
       incomes: prevState.incomes.concat({
@@ -119,6 +118,22 @@ class Income extends React.Component {
     );
   }
 
+  deleteIncome(id) {
+    const incomes = this.state.incomes.slice();
+    incomes.forEach(item => {
+      if (item.id === id) {
+        clearInterval(item.interval);
+        return;
+      } 
+    });
+    
+    const updatedIncomes = incomes.filter(item => item.id !== id);
+    
+    this.setState({
+      incomes: updatedIncomes,
+    });
+  }
+
   render() {
     const incomes = this.state.incomes.slice() ;
     const incomesList = incomes.map(item => {
@@ -126,6 +141,7 @@ class Income extends React.Component {
         <li key={item.id}>
           <span>{item.name} </span>
           <span>{item.value} / {item.timeUnit} </span>
+          <span><button onClick={() => this.deleteIncome(item.id)}>delete</button></span>
         </li>
       );
     });

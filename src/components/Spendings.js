@@ -63,8 +63,7 @@ class Spendings extends React.Component {
 
   addExpense(name, category, price) {
     const expenses = this.state.expenses.slice();
-    const id = this.idCounter;
-    this.idCounter += 1;
+    const id = this.idCounter + 1;
     this.setState({
       id,
       expenses: expenses.concat({ name, category, price, id })
