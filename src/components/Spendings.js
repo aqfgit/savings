@@ -11,9 +11,8 @@ class Spendings extends React.Component {
       categoryValue: "",
       priceValue: 0,
       expenses: [],
+      idCounter: 0,
     };
-
-    this.idCounter = 0;
 
     this.handleNameInputChange = this.handleNameInputChange.bind(this);
     this.handleCategoryInputChange = this.handleCategoryInputChange.bind(this);
@@ -63,10 +62,12 @@ class Spendings extends React.Component {
 
   addExpense(name, category, price) {
     const expenses = this.state.expenses.slice();
-    const id = this.idCounter + 1;
+
+    const id = this.state.idCounter;
     this.setState({
       id,
-      expenses: expenses.concat({ name, category, price, id })
+      expenses: expenses.concat({ name, category, price, id }),
+      idCounter: id + 1,
     });
     this.props.substractFromBudget(price);
   }

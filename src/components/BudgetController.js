@@ -66,7 +66,6 @@ class BudgetController extends React.Component {
   }
 
   addToBudget(value=null) {
-
     const money = value ? value : this.state.balanceInputValue;
 
     this.setState(prevState => ({

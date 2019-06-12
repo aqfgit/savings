@@ -10,9 +10,8 @@ class Income extends React.Component {
       incomes: getLocalStorageItem('incomes'),
       inputName: '',
       inputValue: '',
+      idCounter: 0,
     };
-
-  this.idCounter = 0;
 
   this.handleValueInputChange = this.handleValueInputChange.bind(this);
   this.handleNameInputChange = this.handleNameInputChange.bind(this);
@@ -28,7 +27,6 @@ class Income extends React.Component {
 
     const lastTime = getDateFromLocalStorage('lastIncomeUpadte') || new Date();
     const timeDiff = Math.round((new Date() - lastTime) / 1000) || 1;
-    console.log(timeDiff)
     
     this.state.incomes.forEach((item) => {
       this.props.addToBudget(item.value * timeDiff);
@@ -97,25 +95,25 @@ class Income extends React.Component {
   }
 
   addIncome() {
+    const value = this.state.inputValue;
     const interval = setInterval(() => {
-      this.props.addToBudget(this.state.inputValue);
+      this.props.addToBudget(value);
       addDateToLocalStorage('lastTime', new Date());
     }, 1000);
 
-    const id = this.idCounter + 1;
+    const id = this.state.idCounter;
 
     this.setState(prevState => ({
       incomes: prevState.incomes.concat({
-        id: id,
+        id,
         name: this.state.inputName,
         value: this.state.inputValue,
         frequency: 1000,
         timeUnit: 'second',
         interval: interval,
-      })
-    }),
-    
-    );
+      }),
+      idCounter: id + 1,
+    }));
   }
 
   deleteIncome(id) {
@@ -126,9 +124,8 @@ class Income extends React.Component {
         return;
       } 
     });
-    
+
     const updatedIncomes = incomes.filter(item => item.id !== id);
-    
     this.setState({
       incomes: updatedIncomes,
     });
