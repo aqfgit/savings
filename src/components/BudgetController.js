@@ -3,14 +3,13 @@ import Budget from "./Budget";
 import Spendings from "./Spendings";
 import PageNotfound from "./PageNotFound";
 import { Route, Link, Switch, BrowserRouter as Router } from "react-router-dom";
-import { getLocalStorageItem, setLocalStorageItem, addDateToLocalStorage, getDateFromLocalStorage} from '../utils/localStorage';
 
 class BudgetController extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      balance: getLocalStorageItem('balance') || 0,
+      balance: 0,
       balanceInputValue: "",
     };
 
@@ -20,7 +19,44 @@ class BudgetController extends React.Component {
     this.substractFromBudget = this.substractFromBudget.bind(this);
   }
 
+  componentDidMount() {
+    this.updateStateWithLocalStorage();
+ 
+    window.addEventListener(
+      "beforeunload",
+      this.saveStateToLocalStorage.bind(this)
+    );
+  }
 
+  componentWillUnmount() {
+    window.removeEventListener(
+      "beforeunload",
+      this.saveStateToLocalStorage.bind(this)
+    );
+
+    this.saveStateToLocalStorage();
+  }
+
+  updateStateWithLocalStorage() {
+    for (let key in this.state) {
+      if (localStorage.hasOwnProperty(key)) {
+        let value = localStorage.getItem(key);
+
+        try {
+          value = JSON.parse(value);
+          this.setState({ [key]: value });
+        } catch (e) {
+          this.setState({ [key]: value });
+        }
+      }
+    }
+  }
+
+  saveStateToLocalStorage() {
+    for (let key in this.state) {
+      localStorage.setItem(key, JSON.stringify(this.state[key]));
+    }
+  }
 
   handleBalanceInputChange(value) {
     const intValue = parseInt(value);
@@ -35,17 +71,13 @@ class BudgetController extends React.Component {
 
     this.setState(prevState => ({
       balance: prevState.balance + money
-    }),
-    setLocalStorageItem('balance', this.state.balance + money),
-    );
+    }));
   }
 
   substractFromBudget(price) {
     this.setState(prevState => ({
       balance: prevState.balance - price
-    }),
-    setLocalStorageItem('balance', this.state.balance - this.state.priceValue),
-    );
+    }));
   }
 
   render() {

@@ -7,7 +7,7 @@ class Income extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      incomes: [],
+      incomes: getLocalStorageItem('incomes'),
       inputName: '',
       inputValue: '',
     };
@@ -20,8 +20,16 @@ class Income extends React.Component {
   }
 
   componentDidMount() {
-    const lastTime = getDateFromLocalStorage('lastTime') || new Date();
+    this.updateStateWithLocalStorage();
+    window.addEventListener(
+      "beforeunload",
+      this.saveStateToLocalStorage.bind(this)
+    );
+
+    const lastTime = getDateFromLocalStorage('lastIncomeUpadte') || new Date();
     const timeDiff = Math.round((new Date() - lastTime) / 1000) || 1;
+    console.log(timeDiff)
+    
     this.state.incomes.forEach((item) => {
       this.props.addToBudget(item.value * timeDiff);
 
@@ -29,7 +37,6 @@ class Income extends React.Component {
       const currentIncome = incomes.find((income) => income.name === item.name);
       const interval = setInterval(() => {
         this.props.addToBudget(item.value);
-        addDateToLocalStorage('lastTime', new Date());
       }, item.frequency);
 
       currentIncome.interval = interval;
@@ -39,6 +46,43 @@ class Income extends React.Component {
     });
   }
 
+
+  componentWillUnmount() {
+    window.removeEventListener(
+      "beforeunload",
+      this.saveStateToLocalStorage.bind(this)
+    );
+    
+    addDateToLocalStorage('lastIncomeUpadte', new Date());
+    this.state.incomes.forEach((item) => {
+      clearInterval(item.interval);
+    });
+
+    this.saveStateToLocalStorage();
+  }
+
+  updateStateWithLocalStorage() {
+    for (let key in this.state) {
+      if (localStorage.hasOwnProperty(key)) {
+        let value = localStorage.getItem(key);
+
+        try {
+          value = JSON.parse(value);
+          this.setState({ [key]: value });
+        } catch (e) {
+          this.setState({ [key]: value });
+        }
+      }
+    }
+  }
+
+  saveStateToLocalStorage() {
+    for (let key in this.state) {
+      localStorage.setItem(key, JSON.stringify(this.state[key]));
+    }
+  }
+
+  
   handleValueInputChange(value) {
     const intValue = parseInt(value);
     this.setState({

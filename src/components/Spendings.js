@@ -1,7 +1,6 @@
 import React from "react";
 import Input from "./Input";
 import Button from "./Button";
-import { getLocalStorageItem, setLocalStorageItem} from '../utils/localStorage';
 
 class Spendings extends React.Component {
   constructor(props) {
@@ -23,15 +22,53 @@ class Spendings extends React.Component {
 
   }
 
+  componentDidMount() {
+    this.updateStateWithLocalStorage();
+ 
+    window.addEventListener(
+      "beforeunload",
+      this.saveStateToLocalStorage.bind(this)
+    );
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener(
+      "beforeunload",
+      this.saveStateToLocalStorage.bind(this)
+    );
+
+    this.saveStateToLocalStorage();
+  }
+
+  updateStateWithLocalStorage() {
+    for (let key in this.state) {
+      if (localStorage.hasOwnProperty(key)) {
+        let value = localStorage.getItem(key);
+
+        try {
+          value = JSON.parse(value);
+          this.setState({ [key]: value });
+        } catch (e) {
+          this.setState({ [key]: value });
+        }
+      }
+    }
+  }
+
+  saveStateToLocalStorage() {
+    for (let key in this.state) {
+      localStorage.setItem(key, JSON.stringify(this.state[key]));
+    }
+  }
+
   addExpense(name, category, price) {
     const expenses = this.state.expenses.slice();
     const id = this.idCounter;
     this.idCounter += 1;
     this.setState({
+      id,
       expenses: expenses.concat({ name, category, price, id })
-    },
-    setLocalStorageItem('expenses', expenses.concat({ name, category, price, id })),
-    );
+    });
     this.props.substractFromBudget(price);
   }
 
@@ -55,7 +92,7 @@ class Spendings extends React.Component {
   }
 
   render() {
-    const history = getLocalStorageItem('expenses') || [];
+    const history = this.state.expenses;
     const historyList = history.map(item => {
       return (
         <li key={item.id}>
