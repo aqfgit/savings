@@ -11,66 +11,27 @@ class BudgetController extends React.Component {
 
     this.state = {
       balance: getLocalStorageItem('balance') || 0,
-      inputValue: "",
-      nameValue: "",
-      categoryValue: "",
-      priceValue: 0,
-      expenses: [],
-      incomes: [
-        {
-          name: 'Work',
-          value: 1000,
-          frequency: 1000,
-        },
-      ],
+      balanceInputValue: "",
     };
 
-    this.idCounter = 0;
 
-    this.handleNameInputChange = this.handleNameInputChange.bind(this);
-    this.handleCategoryInputChange = this.handleCategoryInputChange.bind(this);
-    this.handlePriceInputChange = this.handlePriceInputChange.bind(this);
-    this.addExpense = this.addExpense.bind(this);
-
-    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleBalanceInputChange = this.handleBalanceInputChange.bind(this);
     this.addToBudget = this.addToBudget.bind(this);
     this.substractFromBudget = this.substractFromBudget.bind(this);
   }
 
-  
 
-  componentDidMount() {
-    const lastTime = getDateFromLocalStorage('lastTime') || new Date();
-    const timeDiff = Math.round((new Date() - lastTime) / 1000) || 1;
-    this.state.incomes.forEach((item) => {
-      this.addToBudget(item.value * timeDiff);
-      console.log(timeDiff)
 
-      const incomes = this.state.incomes.slice();
-      const currentIncome = incomes.find((income) => income.name === item.name);
-      const interval = setInterval(() => {
-        this.addToBudget(item.value);
-        addDateToLocalStorage('lastTime', new Date());
-      }, item.frequency);
-
-      currentIncome.interval = interval;
-      this.setState(prevState => ({
-        incomes: incomes,
-      }));
-    });
-  }
-
- 
-  handleInputChange(value) {
+  handleBalanceInputChange(value) {
     const intValue = parseInt(value);
     this.setState({
-      inputValue: intValue
+      balanceInputValue: intValue,
     });
   }
 
   addToBudget(value=null) {
 
-    const money = value ? value : this.state.inputValue;
+    const money = value ? value : this.state.balanceInputValue;
 
     this.setState(prevState => ({
       balance: prevState.balance + money
@@ -85,37 +46,6 @@ class BudgetController extends React.Component {
     }),
     setLocalStorageItem('balance', this.state.balance - this.state.priceValue),
     );
-  }
-
-  addExpense(name, category, price) {
-    const expenses = this.state.expenses.slice();
-    const id = this.idCounter;
-    this.idCounter += 1;
-    this.setState({
-      expenses: expenses.concat({ name, category, price, id })
-    },
-    setLocalStorageItem('expenses', expenses.concat({ name, category, price, id })),
-    );
-    this.substractFromBudget(price);
-  }
-
-  handleNameInputChange(value) {
-    this.setState({
-      nameValue: value
-    });
-  }
-
-  handleCategoryInputChange(value) {
-    this.setState({
-      categoryValue: value
-    });
-  }
-
-  handlePriceInputChange(value) {
-    const intValue = parseInt(value);
-    this.setState({
-      priceValue: intValue
-    });
   }
 
   render() {
@@ -139,10 +69,10 @@ class BudgetController extends React.Component {
               path="/"
               render={() => (
                 <Budget
-                  inputValue={this.setState.inputValue}
-                  onChange={this.handleInputChange}
-                  addToBudget={this.addToBudget}
-                  balance={this.state.balance}
+                balanceInputValue={this.state.balanceInputValue}
+                handleBalanceInputChange={this.handleBalanceInputChange}
+                addToBudget={this.addToBudget}
+                balance={this.state.balance}
                 />
               )}
             />
@@ -150,8 +80,8 @@ class BudgetController extends React.Component {
               path="/budget"
               render={() => (
                 <Budget
-                  inputValue={this.setState.inputValue}
-                  onChange={this.handleInputChange}
+                  balanceInputValue={this.state.balanceInputValue}
+                  handleBalanceInputChange={this.handleBalanceInputChange}
                   addToBudget={this.addToBudget}
                   balance={this.state.balance}
                 />
@@ -162,14 +92,6 @@ class BudgetController extends React.Component {
               render={() => (
                 <Spendings
                   substractFromBudget={this.substractFromBudget}
-                  nameValue={this.state.nameValue}
-                  categoryValue={this.state.categoryValue}
-                  priceValue={this.state.priceValue}
-                  handleNameInputChange={this.handleNameInputChange}
-                  handlePriceInputChange={this.handlePriceInputChange}
-                  handleCategoryInputChange={this.handleCategoryInputChange}
-                  expenses={this.state.expenses}
-                  addExpense={this.addExpense}
                 />
               )}
             />
