@@ -3,13 +3,15 @@ import Budget from "./Budget";
 import Spendings from "./Spendings";
 import PageNotfound from "./PageNotFound";
 import { Route, Link, Switch, BrowserRouter as Router } from "react-router-dom";
+import { getLocalStorageItem, getDateFromLocalStorage, addDateToLocalStorage } from '../utils/localStorage';
+
 
 class BudgetController extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      balance: 0,
+      balance: getLocalStorageItem('balance') || 0,
       balanceInputValue: "",
     };
 
@@ -20,8 +22,6 @@ class BudgetController extends React.Component {
   }
 
   componentDidMount() {
-    this.updateStateWithLocalStorage();
- 
     window.addEventListener(
       "beforeunload",
       this.saveStateToLocalStorage.bind(this)
@@ -35,21 +35,6 @@ class BudgetController extends React.Component {
     );
 
     this.saveStateToLocalStorage();
-  }
-
-  updateStateWithLocalStorage() {
-    for (let key in this.state) {
-      if (localStorage.hasOwnProperty(key)) {
-        let value = localStorage.getItem(key);
-
-        try {
-          value = JSON.parse(value);
-          this.setState({ [key]: value });
-        } catch (e) {
-          this.setState({ [key]: value });
-        }
-      }
-    }
   }
 
   saveStateToLocalStorage() {
@@ -67,7 +52,6 @@ class BudgetController extends React.Component {
 
   addToBudget(value=null) {
     const money = value ? value : this.state.balanceInputValue;
-
     this.setState(prevState => ({
       balance: prevState.balance + money
     }));
