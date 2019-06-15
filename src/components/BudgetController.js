@@ -12,11 +12,9 @@ class BudgetController extends React.Component {
 
     this.state = {
       balance: getLocalStorageItem('balance') || 0,
-      balanceInputValue: "",
     };
 
 
-    this.handleBalanceInputChange = this.handleBalanceInputChange.bind(this);
     this.addToBudget = this.addToBudget.bind(this);
     this.substractFromBudget = this.substractFromBudget.bind(this);
   }
@@ -43,17 +41,14 @@ class BudgetController extends React.Component {
     }
   }
 
-  handleBalanceInputChange(value) {
-    const intValue = parseInt(value);
-    this.setState({
-      balanceInputValue: intValue,
-    });
-  }
-
-  addToBudget(value=null) {
-    const money = value ? value : this.state.balanceInputValue;
+  addToBudget(value) {
+    const intValue= parseInt(value);
+    if (isNaN(intValue)) {
+      console.log('nope')
+      return;
+    }
     this.setState(prevState => ({
-      balance: prevState.balance + money
+      balance: prevState.balance + intValue,
     }));
   }
 
@@ -84,8 +79,6 @@ class BudgetController extends React.Component {
               path="/"
               render={() => (
                 <Budget
-                balanceInputValue={this.state.balanceInputValue}
-                handleBalanceInputChange={this.handleBalanceInputChange}
                 addToBudget={this.addToBudget}
                 balance={this.state.balance}
                 />
@@ -95,8 +88,6 @@ class BudgetController extends React.Component {
               path="/budget"
               render={() => (
                 <Budget
-                  balanceInputValue={this.state.balanceInputValue}
-                  handleBalanceInputChange={this.handleBalanceInputChange}
                   addToBudget={this.addToBudget}
                   balance={this.state.balance}
                 />
