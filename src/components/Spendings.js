@@ -13,6 +13,8 @@ class Spendings extends React.Component {
       expenses: [],
       idCounter: 0,
       priceInputIsValid: false,
+      nameInputIsValid: false,
+      categoryInputIsValid: false,
     };
 
     this.handleNameInputChange = this.handleNameInputChange.bind(this);
@@ -62,10 +64,10 @@ class Spendings extends React.Component {
   }
 
   addExpense(name, category, value) {
-    const price = parseInt(value);
-    if (isNaN(price)) {
+    if (!this.state.priceInputIsValid || !this.state.nameInputIsValid || !this.state.categoryInputIsValid) {
       return;
     }
+    const price = parseInt(value);
     const expenses = this.state.expenses.slice();
 
     const id = this.state.idCounter;
@@ -74,20 +76,28 @@ class Spendings extends React.Component {
       expenses: expenses.concat({ name, category, price, id }),
       idCounter: id + 1,
       priceValue: '',
+      nameValue: '',
+      categoryValue: '',
       priceInputIsValid: false,
+      nameInputIsValid: false,
+      categoryInputIsValid: false,
     });
     this.props.substractFromBudget(price);
   }
 
-  handleNameInputChange(value) {
+  handleNameInputChange(name) {
+    const isInputValid = (name === '') ? false : true;
     this.setState({
-      nameValue: value
+      nameValue: name,
+      nameInputIsValid: isInputValid
     });
   }
 
-  handleCategoryInputChange(value) {
+  handleCategoryInputChange(name) {
+    const isInputValid = (name === '') ? false : true;
     this.setState({
-      categoryValue: value
+      categoryValue: name,
+      categoryInputIsValid: isInputValid
     });
   }
 
@@ -112,8 +122,14 @@ class Spendings extends React.Component {
       );
     });
 
-    const inputBorder = {
+    const priceInputBorder = {
       border: (this.state.priceInputIsValid) ? null : '1px solid red',
+    };
+    const categoryInputBorder = {
+      border: (this.state.categoryInputIsValid) ? null : '1px solid red',
+    };
+    const nameInputBorder = {
+      border: (this.state.nameInputIsValid) ? null : '1px solid red',
     };
 
     return (
@@ -125,6 +141,7 @@ class Spendings extends React.Component {
             onChange={this.handleNameInputChange}
             label="Name"
             dataType="text"
+            style={nameInputBorder}
           />
         </div>
         <div>
@@ -133,6 +150,7 @@ class Spendings extends React.Component {
             onChange={this.handleCategoryInputChange}
             label="Category"
             dataType="text"
+            style={categoryInputBorder}
           />
         </div>
         <div>
@@ -141,7 +159,7 @@ class Spendings extends React.Component {
             onChange={this.handlePriceInputChange}
             label="Price"
             dataType="number"
-            style={inputBorder}
+            style={priceInputBorder}
           />
         </div>
         <Button

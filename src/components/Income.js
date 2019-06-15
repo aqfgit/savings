@@ -12,6 +12,7 @@ class Income extends React.Component {
       inputValue: '',
       idCounter: 0,
       valueInputIsValid: false,
+      nameInputIsValid: false,
     };
 
   this.handleValueInputChange = this.handleValueInputChange.bind(this);
@@ -93,15 +94,18 @@ class Income extends React.Component {
   }
 
   handleNameInputChange(name) {
+    const isInputValid = (name === '') ? false : true;
     this.setState({
       inputName: name,
+      nameInputIsValid: isInputValid,
     });
   }
 
   addIncome() {
     const value = this.state.inputValue;
     const intValue= parseInt(value);
-    if (isNaN(intValue)) {
+
+    if (!this.state.valueInputIsValid || !this.state.nameInputIsValid) {
       return;
     }
     const interval = setInterval(() => {
@@ -124,6 +128,7 @@ class Income extends React.Component {
       inputValue: '',
       inputName: '',
       valueInputIsValid: false,
+      nameInputIsValid: false,
     }));
   }
 
@@ -154,8 +159,12 @@ class Income extends React.Component {
       );
     });
 
-    const inputBorder = {
+    const valueInputBorder = {
       border: (this.state.valueInputIsValid) ? null : '1px solid red',
+    };
+
+    const nameInputBorder = {
+      border: (this.state.nameInputIsValid) ? null : '1px solid red',
     };
 
     return (
@@ -165,12 +174,13 @@ class Income extends React.Component {
           inputValue={this.state.inputName}
           onChange={this.handleNameInputChange}
           dataType="text"
+          style={nameInputBorder}
         />
         <Input
           inputValue={this.state.inputValue}
           onChange={this.handleValueInputChange}
           dataType="number"
-          style={inputBorder}
+          style={valueInputBorder}
         />
         <Button onClick={this.addIncome} name="Add income" />
         <ul>
