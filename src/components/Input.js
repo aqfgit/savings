@@ -18,7 +18,7 @@ class Input extends React.Component {
         
         return (
             <>
-                <input type="number" value={this.props.inputValue} onChange={this.handleChange} style={{border}} />
+                <input type={this.props.dataType} value={this.props.inputValue} onChange={this.handleChange} style={{border}} />
                 <label>{this.props.label}</label>
             </>
         );

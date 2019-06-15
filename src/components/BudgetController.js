@@ -43,9 +43,6 @@ class BudgetController extends React.Component {
 
   addToBudget(value) {
     const intValue= parseInt(value);
-    if (isNaN(intValue)) {
-      return;
-    }
     this.setState(prevState => ({
       balance: prevState.balance + intValue,
     }));
