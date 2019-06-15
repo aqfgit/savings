@@ -11,6 +11,7 @@ class Income extends React.Component {
       inputName: '',
       inputValue: '',
       idCounter: 0,
+      valueInputIsValid: false,
     };
 
   this.handleValueInputChange = this.handleValueInputChange.bind(this);
@@ -84,8 +85,10 @@ class Income extends React.Component {
   
   handleValueInputChange(value) {
     const intValue = parseInt(value);
+    const isInputValid = !isNaN(intValue)
     this.setState({
-      inputValue: intValue,
+      inputValue: value,
+      valueInputIsValid: isInputValid,
     });
   }
 
@@ -97,6 +100,10 @@ class Income extends React.Component {
 
   addIncome() {
     const value = this.state.inputValue;
+    const intValue= parseInt(value);
+    if (isNaN(intValue)) {
+      return;
+    }
     const interval = setInterval(() => {
       this.props.addToBudget(value);
       addDateToLocalStorage('lastIncomeUpadte', new Date());
@@ -108,12 +115,15 @@ class Income extends React.Component {
       incomes: prevState.incomes.concat({
         id,
         name: this.state.inputName,
-        value: this.state.inputValue,
+        value: intValue,
         frequency: 1000,
         timeUnit: 'second',
         interval: interval,
       }),
       idCounter: id + 1,
+      inputValue: '',
+      inputName: '',
+      valueInputIsValid: false,
     }));
   }
 
@@ -144,6 +154,10 @@ class Income extends React.Component {
       );
     });
 
+    const inputBorder = {
+      border: (this.state.valueInputIsValid) ? null : '1px solid red',
+    };
+
     return (
       <>
       <h2>Incomes</h2>
@@ -156,6 +170,7 @@ class Income extends React.Component {
           inputValue={this.state.inputValue}
           onChange={this.handleValueInputChange}
           dataType="number"
+          style={inputBorder}
         />
         <Button onClick={this.addIncome} name="Add income" />
         <ul>
