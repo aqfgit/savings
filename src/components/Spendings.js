@@ -12,6 +12,7 @@ class Spendings extends React.Component {
       priceValue: 0,
       expenses: [],
       idCounter: 0,
+      priceInputIsValid: false,
     };
 
     this.handleNameInputChange = this.handleNameInputChange.bind(this);
@@ -60,7 +61,11 @@ class Spendings extends React.Component {
     }
   }
 
-  addExpense(name, category, price) {
+  addExpense(name, category, value) {
+    const price = parseInt(value);
+    if (isNaN(price)) {
+      return;
+    }
     const expenses = this.state.expenses.slice();
 
     const id = this.state.idCounter;
@@ -68,6 +73,8 @@ class Spendings extends React.Component {
       id,
       expenses: expenses.concat({ name, category, price, id }),
       idCounter: id + 1,
+      priceValue: '',
+      priceInputIsValid: false,
     });
     this.props.substractFromBudget(price);
   }
@@ -86,8 +93,10 @@ class Spendings extends React.Component {
 
   handlePriceInputChange(value) {
     const intValue = parseInt(value);
+    const isInputValid = !isNaN(intValue)
     this.setState({
-      priceValue: intValue
+      priceValue: value,
+      priceInputIsValid: isInputValid
     });
   }
 
@@ -102,6 +111,11 @@ class Spendings extends React.Component {
         </li>
       );
     });
+
+    const inputBorder = {
+      border: (this.state.priceInputIsValid) ? null : '1px solid red',
+    };
+
     return (
       <>
         <h2>Spendings</h2>
@@ -127,6 +141,7 @@ class Spendings extends React.Component {
             onChange={this.handlePriceInputChange}
             label="Price"
             dataType="number"
+            style={inputBorder}
           />
         </div>
         <Button

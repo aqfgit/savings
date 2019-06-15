@@ -21,7 +21,6 @@ class Budget extends React.Component {
   handleBalanceInputChange(value) {
     const intValue = parseInt(value);
     const isInputValid = !isNaN(intValue)
-    console.log(value, 'hey')
     this.setState({
       balanceInputValue: value,
       balanceInputIsValid: isInputValid,
