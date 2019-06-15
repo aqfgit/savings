@@ -9,15 +9,16 @@ class Input extends React.Component {
     
 
     handleChange(e) {
+        console.log(e.target.value)
         this.props.onChange(e.target.value)
     }
     
-   
-
     render() {
+        const border = this.props.style ? this.props.style.border : null;
+        
         return (
             <>
-                <input type="number" value={this.props.inputValue} onChange={this.handleChange} type={this.props.dataType}/>
+                <input type="number" value={this.props.inputValue} onChange={this.handleChange} style={{border}} />
                 <label>{this.props.label}</label>
             </>
         );
