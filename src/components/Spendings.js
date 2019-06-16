@@ -1,7 +1,16 @@
 import React from "react";
 import Input from "./Input";
+import Select from "./Select";
 import Button from "./Button";
 import { textValueIsValid, numberValueIsValid } from '../utils/inputValidation';
+
+const CATEGORIES = [
+  'Grocieries',
+  'Electronics',
+  'Clothes',
+  'Books',
+  'Vehicles',
+];
 
 class Spendings extends React.Component {
   constructor(props) {
@@ -147,6 +156,12 @@ class Spendings extends React.Component {
       );
     });
 
+    const categoryOptions = CATEGORIES.map(item => {
+      return (
+        <option value={item}>{item}</option>
+      )
+    })
+
     const priceInputBorder = {
       border: (this.state.priceInputIsValid) ? null : '1px solid red',
     };
@@ -173,13 +188,14 @@ class Spendings extends React.Component {
           />
         </div>
         <div>
-          <Input
+          <Select
             inputValue={this.state.categoryValue}
             onChange={this.handleCategoryInputChange}
             label="Category"
-            dataType="text"
             style={categoryInputBorder}
-          />
+          >
+            {categoryOptions}
+          </Select>
         </div>
         <div>
           <Input
