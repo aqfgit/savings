@@ -2,6 +2,8 @@ import React from "react";
 import Input from "./Input";
 import Button from "./Button";
 import { getLocalStorageItem, getDateFromLocalStorage, addDateToLocalStorage } from '../utils/localStorage';
+import { textValueIsValid, numberValueIsValid } from '../utils/inputValidation';
+
 
 class Income extends React.Component {
   constructor(props) {
@@ -85,8 +87,7 @@ class Income extends React.Component {
 
   
   handleValueInputChange(value) {
-    const intValue = parseInt(value);
-    const isInputValid = !isNaN(intValue)
+    const isInputValid = numberValueIsValid(value)
     this.setState({
       inputValue: value,
       valueInputIsValid: isInputValid,
@@ -94,7 +95,7 @@ class Income extends React.Component {
   }
 
   handleNameInputChange(name) {
-    const isInputValid = (name === '') ? false : true;
+    const isInputValid = textValueIsValid(name);
     this.setState({
       inputName: name,
       nameInputIsValid: isInputValid,

@@ -3,7 +3,7 @@ import Budget from "./Budget";
 import Spendings from "./Spendings";
 import PageNotfound from "./PageNotFound";
 import { Route, Link, Switch, BrowserRouter as Router } from "react-router-dom";
-import { getLocalStorageItem, getDateFromLocalStorage, addDateToLocalStorage } from '../utils/localStorage';
+import { getLocalStorageItem } from '../utils/localStorage';
 
 
 class BudgetController extends React.Component {
@@ -94,6 +94,7 @@ class BudgetController extends React.Component {
               render={() => (
                 <Spendings
                   substractFromBudget={this.substractFromBudget}
+                  addToBudget={this.addToBudget}
                 />
               )}
             />
