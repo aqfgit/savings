@@ -2,6 +2,8 @@ import React from "react";
 import Input from "./Input";
 import Button from "./Button";
 import Income from './Income';
+import { numberValueIsValid } from '../utils/inputValidation';
+
 
 class Budget extends React.Component {
 
@@ -19,8 +21,7 @@ class Budget extends React.Component {
   }
 
   handleBalanceInputChange(value) {
-    const intValue = parseInt(value);
-    const isInputValid = !isNaN(intValue)
+    const isInputValid = numberValueIsValid(value)
     this.setState({
       balanceInputValue: value,
       balanceInputIsValid: isInputValid,
@@ -43,7 +44,6 @@ class Budget extends React.Component {
     const inputBorder = {
       border: (this.state.balanceInputIsValid) ? null : '1px solid red',
     };
-    console.log(inputBorder)
     return (
       <>
         <h2>My budget</h2>
