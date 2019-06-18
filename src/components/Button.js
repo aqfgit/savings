@@ -22,7 +22,7 @@ class Button extends React.Component {
 }
 
 Button.propTypes = {
-    handleClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
 };
 

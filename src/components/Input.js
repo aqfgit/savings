@@ -27,7 +27,7 @@ class Input extends React.Component {
 }
 
 Input.propTypes = {
-    inputValue: PropTypes.string.isRequired,
+    inputValue: PropTypes.any.isRequired,
     onChange: PropTypes.func.isRequired,
     dataType: PropTypes.string.isRequired,
     border: PropTypes.object
