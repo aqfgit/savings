@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import Input from "./Input";
 import Button from "./Button";
 import Income from './Income';
@@ -62,5 +63,10 @@ class Budget extends React.Component {
     );
   }
 }
+
+Budget.propTypes = {
+  balance: PropTypes.number,
+  addToBudget: PropTypes.func,
+};
 
 export default Budget;

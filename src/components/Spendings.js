@@ -148,9 +148,8 @@ class Spendings extends React.Component {
         <li key={item.id}>
             <span>{item.name} </span>
             <span>{item.category} </span>
+            <span>{item.price}$ </span>
             <span>{item.quantity} </span>
-            <span>{item.price * item.quantity}$ </span>
-            <span></span>
             <span><button onClick={() => this.deleteExpense(item.id, item.price)}>Delete</button></span>
           </li>
       );
