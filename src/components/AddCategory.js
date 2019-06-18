@@ -15,6 +15,7 @@ class AddCategory extends React.Component {
       isOpen: false,
       inputValue: '',
       inputIsValid: false,
+      recentlyAdded: null,
     };
 
 
@@ -33,7 +34,12 @@ class AddCategory extends React.Component {
   handleAddCategory() {
     if (this.state.inputIsValid) {
         this.props.addCategory(this.state.inputValue);
-        console.log(1)
+
+        this.setState(prevState => ({
+            recentlyAdded: prevState.inputValue,
+            inputValue: '',
+            inputIsValid: false,
+          }));
     }
   }
 
@@ -59,7 +65,9 @@ class AddCategory extends React.Component {
                     style={border}
                     />
                     <Button onClick={this.handleAddCategory} name="Add category" />
-                    <p>.</p>
+                    {this.state.recentlyAdded && (
+                        <p>{this.state.recentlyAdded} category has been added.</p>
+                    )}
                 </div>)
         }
         </> 
