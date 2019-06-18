@@ -3,15 +3,8 @@ import PropTypes from 'prop-types';
 import Input from "./Input";
 import Select from "./Select";
 import Button from "./Button";
+import AddCategory from './AddCategory';
 import { textValueIsValid, numberValueIsValid } from '../utils/inputValidation';
-
-const CATEGORIES = [
-  'Grocieries',
-  'Electronics',
-  'Clothes',
-  'Books',
-  'Vehicles',
-];
 
 class Spendings extends React.Component {
   constructor(props) {
@@ -23,6 +16,7 @@ class Spendings extends React.Component {
       priceValue: 0,
       quantityValue: 1,
       expenses: [],
+      categories: [],
       idCounter: 0,
       priceInputIsValid: false,
       quantityInputIsValid: true,
@@ -35,6 +29,7 @@ class Spendings extends React.Component {
     this.handlePriceInputChange = this.handlePriceInputChange.bind(this);
     this.handleQuantityInputChange = this.handleQuantityInputChange.bind(this);
     this.addExpense = this.addExpense.bind(this);
+    this.addCategory = this.addCategory.bind(this);
 
   }
 
@@ -75,6 +70,12 @@ class Spendings extends React.Component {
     for (let key in this.state) {
       localStorage.setItem(key, JSON.stringify(this.state[key]));
     }
+  }
+
+  addCategory(name) {
+    this.setState(prevState => ({
+      categories: prevState.categories.concat(name),
+    }));
   }
 
   addExpense(name, category, value, quantity) {
@@ -156,9 +157,9 @@ class Spendings extends React.Component {
       );
     });
 
-    const categoryOptions = CATEGORIES.map(item => {
+    const categoryOptions = this.state.categories.map(item => {
       return (
-        <option value={item}>{item}</option>
+        <option key={item} value={item}>{item}</option>
       )
     })
 
@@ -196,6 +197,7 @@ class Spendings extends React.Component {
           >
             {categoryOptions}
           </Select>
+          <AddCategory addCategory={this.addCategory}/>
         </div>
         <div>
           <Input
