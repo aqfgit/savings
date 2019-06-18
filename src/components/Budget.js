@@ -65,8 +65,8 @@ class Budget extends React.Component {
 }
 
 Budget.propTypes = {
-  balance: PropTypes.number,
-  addToBudget: PropTypes.func,
+  balance: PropTypes.number.isRequired,
+  addToBudget: PropTypes.func.isRequired,
 };
 
 export default Budget;

@@ -194,7 +194,7 @@ class Income extends React.Component {
 }
 
 Income.propTypes = {
-  addToBudget: PropTypes.func,
+  addToBudget: PropTypes.func.isRequired,
 };
 
 export default Income;
