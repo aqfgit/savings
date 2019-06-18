@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 
 class Select extends React.Component {
     constructor(props) {
@@ -13,17 +15,21 @@ class Select extends React.Component {
     }
     
     render() {
-        const border = this.props.style ? this.props.style.border : null;
-        
         return (
             <>
-                <select id="select" value={this.props.inputValue} onChange={this.handleChange} style={{border}} >
+                <select id="select" value={this.props.inputValue} onChange={this.handleChange} >
                     {this.props.children}
                 </select>
                 <label>{this.props.label}</label>
             </>
         );
     }
+}
+
+Select.propTypes = {
+    inputValue: PropTypes.string,
+    onChange: PropTypes.func,
+    label: PropTypes.string,
 }
 
 export default Select;

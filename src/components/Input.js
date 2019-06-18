@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 
 class Input extends React.Component {
     constructor(props) {
@@ -13,7 +15,7 @@ class Input extends React.Component {
     }
     
     render() {
-        const border = this.props.style ? this.props.style.border : null;
+        const border = this.props.style.border || null;
         
         return (
             <>
@@ -22,6 +24,13 @@ class Input extends React.Component {
             </>
         );
     }
+}
+
+Input.propTypes = {
+    inputValue: PropTypes.string,
+    onChange: PropTypes.func,
+    dataType: PropTypes.string,
+    border: PropTypes.object
 }
 
 export default Input;
