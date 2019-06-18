@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import Input from "./Input";
 import Select from "./Select";
 import Button from "./Button";
@@ -230,6 +231,11 @@ class Spendings extends React.Component {
       </>
     );
   }
+}
+
+Spendings.propTypes = {
+  addToBudget: PropTypes.func.isRequired,
+  substractFromBudget: PropTypes.func.isRequired,
 }
 
 export default Spendings;
