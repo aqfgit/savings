@@ -45,6 +45,12 @@ class AddCategory extends React.Component {
 
 
   render() {
+    const categories = this.props.categories;
+    const categoriesList = categories.map(item => {
+      return (
+        <li key={item + 'id'}>{item} <Button onClick={() => this.props.removeCategory(item)} name="delete" /></li>
+      )
+    });
     
     const border = {
       border: (this.state.inputIsValid) ? null : '1px solid red',
@@ -57,6 +63,10 @@ class AddCategory extends React.Component {
         </span>
         {
             this.state.isOpen && (
+              <>
+                <div>
+                  {categoriesList}
+                </div>
                 <div>
                     <Input
                     inputValue={this.state.inputValue}
@@ -68,7 +78,8 @@ class AddCategory extends React.Component {
                     {this.state.recentlyAdded && (
                         <p>{this.state.recentlyAdded} category has been added.</p>
                     )}
-                </div>)
+                </div>
+                </>)
         }
         </> 
     );
@@ -77,6 +88,7 @@ class AddCategory extends React.Component {
 
 AddCategory.propTypes = {
   addCategory: PropTypes.func.isRequired,
+  categories: PropTypes.array.isRequired,
 };
 
 export default AddCategory;

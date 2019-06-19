@@ -15,9 +15,11 @@ class Select extends React.Component {
     }
     
     render() {
+        const border = this.props.style.border || null;
+
         return (
             <>
-                <select id="select" value={this.props.inputValue} onChange={this.handleChange} >
+                <select id="select" value={this.props.inputValue} onChange={this.handleChange} style={{border}} >
                     {this.props.children}
                 </select>
                 <label>{this.props.label}</label>

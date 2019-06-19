@@ -30,7 +30,7 @@ class Spendings extends React.Component {
     this.handleQuantityInputChange = this.handleQuantityInputChange.bind(this);
     this.addExpense = this.addExpense.bind(this);
     this.addCategory = this.addCategory.bind(this);
-
+    this.removeCategory = this.removeCategory.bind(this);
   }
 
   componentDidMount() {
@@ -73,9 +73,35 @@ class Spendings extends React.Component {
   }
 
   addCategory(name) {
+    const isCategoriesEmpty = !this.state.categories.length;
     this.setState(prevState => ({
       categories: prevState.categories.concat(name),
-    }));
+    }),
+    () => {
+      if (isCategoriesEmpty) {
+        const newCategory = this.changeCategory();
+        this.handleCategoryInputChange(newCategory);
+      }
+    });
+  }
+
+  removeCategory(name) {
+    const categories = this.state.categories.slice();
+    const updatedCategories = categories.filter(cat => cat !== name);
+    this.setState(prevState => ({
+      categories: updatedCategories,
+    }),
+    () => {
+      const newCategory = this.changeCategory() || '';
+      this.handleCategoryInputChange(newCategory);
+    });
+  }
+
+  changeCategory() {
+    const categories = this.state.categories.slice();
+    let newCategory = null;
+    categories.forEach(item => newCategory = item);
+    return newCategory;
   }
 
   addExpense(name, category, value, quantity) {
@@ -92,11 +118,9 @@ class Spendings extends React.Component {
       idCounter: id + 1,
       priceValue: '',
       nameValue: '',
-      categoryValue: '',
       quantityValue: 1,
       priceInputIsValid: false,
       nameInputIsValid: false,
-      categoryInputIsValid: false,
       quantityInputIsValid: true,
     });
     this.props.substractFromBudget(price);
@@ -197,7 +221,7 @@ class Spendings extends React.Component {
           >
             {categoryOptions}
           </Select>
-          <AddCategory addCategory={this.addCategory}/>
+          <AddCategory addCategory={this.addCategory} categories={this.state.categories} removeCategory={this.removeCategory}/>
         </div>
         <div>
           <Input
