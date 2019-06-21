@@ -1,6 +1,7 @@
 import React from "react";
 import Budget from "./Budget";
 import Spendings from "./Spendings";
+import Debts from './Debts';
 import PageNotfound from "./PageNotFound";
 import { Route, Link, Switch, BrowserRouter as Router } from "react-router-dom";
 import { getLocalStorageItem } from '../utils/localStorage';
@@ -67,6 +68,9 @@ class BudgetController extends React.Component {
               <li>
                 <Link to="/spendings">Spendings</Link>
               </li>
+              <li>
+                <Link to="/debts">Debts</Link>
+              </li>
             </ul>
           </nav>
           <Switch>
@@ -95,6 +99,14 @@ class BudgetController extends React.Component {
                 <Spendings
                   substractFromBudget={this.substractFromBudget}
                   addToBudget={this.addToBudget}
+                />
+              )}
+            />
+            <Route
+              path="/debts"
+              render={() => (
+                <Debts
+                substractFromBudget={this.substractFromBudget}
                 />
               )}
             />
