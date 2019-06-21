@@ -1,0 +1,178 @@
+import React from "react";
+import PropTypes from 'prop-types';
+import Input from "./Input";
+import Button from "./Button";
+import DebtItem from './DebtItem';
+import { numberValueIsValid, textValueIsValid } from '../utils/inputValidation';
+
+
+class Debts extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      debts: [],
+      inputName: '',
+      inputValue: '',
+      idCounter: 0,
+      valueInputIsValid: false,
+      nameInputIsValid: false,
+    };
+
+
+    this.handleValueInputChange = this.handleValueInputChange.bind(this);
+    this.handleNameInputChange = this.handleNameInputChange.bind(this);
+
+    this.addDebt = this.addDebt.bind(this);
+    this.deleteDebt = this.deleteDebt.bind(this);
+    this.payDebt = this.payDebt.bind(this);
+  }
+
+  componentDidMount() {
+    this.updateStateWithLocalStorage();
+    window.addEventListener(
+      "beforeunload",
+      this.saveStateToLocalStorage.bind(this)
+    );
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener(
+      "beforeunload",
+      this.saveStateToLocalStorage.bind(this)
+    );
+
+    this.saveStateToLocalStorage();
+  }
+
+  updateStateWithLocalStorage() {
+    for (let key in this.state) {
+      if (localStorage.hasOwnProperty(key)) {
+        let value = localStorage.getItem(key);
+
+        try {
+          value = JSON.parse(value);
+          this.setState({ [key]: value });
+        } catch (e) {
+          this.setState({ [key]: value });
+        }
+      }
+    }
+  }
+
+  saveStateToLocalStorage() {
+    for (let key in this.state) {
+      localStorage.setItem(key, JSON.stringify(this.state[key]));
+    }
+  }
+
+  handleValueInputChange(value) {
+    const isInputValid = numberValueIsValid(value)
+    this.setState({
+      inputValue: value,
+      valueInputIsValid: isInputValid,
+    });
+  }
+
+  handleNameInputChange(name) {
+    const isInputValid = textValueIsValid(name);
+    this.setState({
+      inputName: name,
+      nameInputIsValid: isInputValid,
+    });
+  }
+  
+  addDebt() {
+    const value = this.state.inputValue;
+    const intValue = parseInt(value);
+
+    if (!this.state.valueInputIsValid || !this.state.nameInputIsValid) {
+      return;
+    }
+   
+    const id = this.state.idCounter;
+
+    this.setState(prevState => ({
+      debts: prevState.debts.concat({
+        id,
+        name: this.state.inputName,
+        moneyLeft: intValue,
+      }),
+      idCounter: id + 1,
+      inputValue: '',
+      inputName: '',
+      valueInputIsValid: false,
+      nameInputIsValid: false,
+    }));
+  }
+
+  deleteDebt(id) {
+    const debts = this.state.debts.slice();
+    const updatedDebts= debts.filter(item => item.id !== id);
+    this.setState({
+      debts: updatedDebts,
+    });
+  }
+
+  payDebt(id, money) {
+    const debts = this.state.debts.slice();
+    const index = debts.findIndex(item => item.id === id);
+    debts[index].moneyLeft -= money;
+    const newMoneyLeft = debts[index].moneyLeft;
+    const rest = newMoneyLeft > 0 ? 0 : (newMoneyLeft * (-1))
+    this.props.substractFromBudget(money - rest);
+
+    this.setState({
+      debts,
+    });
+  }
+
+  render() {
+    
+    const valueInputBorder = {
+      border: (this.state.valueInputIsValid) ? null : '1px solid red',
+    };
+
+    const nameInputBorder = {
+      border: (this.state.nameInputIsValid) ? null : '1px solid red',
+    };
+
+    const debts = this.state.debts;
+    const debtsList = debts.map(item => {
+      return (
+        <li>
+          <DebtItem id={item.id} name={item.name} moneyLeft={item.moneyLeft} payDebt={this.payDebt} deleteDebt={this.deleteDebt} />
+        </li>
+      )
+    })
+
+    return (
+      <>
+      <h2>Incomes</h2>
+        <Input
+          inputValue={this.state.inputName}
+          onChange={this.handleNameInputChange}
+          dataType="text"
+          style={nameInputBorder}
+        />
+        <Input
+          inputValue={this.state.inputValue}
+          onChange={this.handleValueInputChange}
+          dataType="number"
+          style={valueInputBorder}
+        />
+        <Button onClick={this.addDebt} name="Add debt" />
+        <ul>
+            {debtsList}
+        </ul>
+      </>
+    );
+  }
+}
+
+Debts.propTypes = {
+
+};
+
+export default Debts;
