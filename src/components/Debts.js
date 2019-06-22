@@ -175,7 +175,7 @@ class Debts extends React.Component {
 }
 
 Debts.propTypes = {
-
+  substractFromBudget: PropTypes.func.isRequired,
 };
 
 export default Debts;

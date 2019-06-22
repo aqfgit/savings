@@ -77,7 +77,12 @@ class DebtItem extends React.Component {
 }
 
 DebtItem.propTypes = {
- 
+ id: PropTypes.number.isRequired,
+ name: PropTypes.string.isRequired,
+ initialMoney: PropTypes.number.isRequired,
+ moneyPaid: PropTypes.number.isRequired,
+ payDebt: PropTypes.func.isRequired,
+ deleteDebt: PropTypes.func.isRequired
 };
 
 export default DebtItem;
