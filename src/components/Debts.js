@@ -97,7 +97,8 @@ class Debts extends React.Component {
       debts: prevState.debts.concat({
         id,
         name: this.state.inputName,
-        moneyLeft: intValue,
+        initialMoney: intValue,
+        moneyPaid: 0,
       }),
       idCounter: id + 1,
       inputValue: '',
@@ -116,11 +117,13 @@ class Debts extends React.Component {
   }
 
   payDebt(id, money) {
+    const intMoney = parseInt(money);
     const debts = this.state.debts.slice();
     const index = debts.findIndex(item => item.id === id);
-    debts[index].moneyLeft -= money;
-    const newMoneyLeft = debts[index].moneyLeft;
-    const rest = newMoneyLeft > 0 ? 0 : (newMoneyLeft * (-1))
+    debts[index].moneyPaid += intMoney;
+    const newMoneyPaid = debts[index].moneyPaid;
+    const initialMoney = debts[index].initialMoney;
+    const rest = newMoneyPaid <= initialMoney ? 0 : (newMoneyPaid - initialMoney)
     this.props.substractFromBudget(money - rest);
 
     this.setState({
@@ -142,14 +145,14 @@ class Debts extends React.Component {
     const debtsList = debts.map(item => {
       return (
         <li>
-          <DebtItem id={item.id} name={item.name} moneyLeft={item.moneyLeft} payDebt={this.payDebt} deleteDebt={this.deleteDebt} />
+          <DebtItem id={item.id} name={item.name} initialMoney={item.initialMoney} moneyPaid={item.moneyPaid} payDebt={this.payDebt} deleteDebt={this.deleteDebt} />
         </li>
       )
     })
 
     return (
       <>
-      <h2>Incomes</h2>
+      <h2>Debts</h2>
         <Input
           inputValue={this.state.inputName}
           onChange={this.handleNameInputChange}

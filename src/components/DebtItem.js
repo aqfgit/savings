@@ -33,12 +33,11 @@ class DebtItem extends React.Component {
     if (!this.state.valueInputIsValid) {
       return;
     }
-
     this.props.payDebt(this.props.id, this.state.inputValue);
   }
 
-  isDebtPaid(moneyLeft) {
-    if (moneyLeft <= 0) {
+  isDebtPaid(moneyPaid) {
+    if (moneyPaid >= this.props.initialMoney) {
       return true;
     }
     return false;
@@ -50,16 +49,16 @@ class DebtItem extends React.Component {
       border: (this.state.valueInputIsValid) ? null : '1px solid red',
     };
 
-    const moneyLeft = !this.isDebtPaid(this.props.moneyLeft) ? this.props.moneyLeft : 'Debt paid! :)';
+    const moneyPaid = !this.isDebtPaid(this.props.moneyPaid) ? this.props.moneyPaid : this.props.initialMoney;
 
     return (
       <>
       <h2>Incomes</h2>
         <span>{this.props.name} </span>
-        <span>{moneyLeft} </span>
+        <span>{moneyPaid} / {this.props.initialMoney} </span>
         
         {
-          !this.isDebtPaid(this.props.moneyLeft) && (
+          !this.isDebtPaid(this.props.moneyPaid) && (
             <>
               <Input
                 inputValue={this.state.inputValue}
