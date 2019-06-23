@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Input from "./Input";
-import Button from "./Button";
-import { numberValueIsValid } from "../utils/inputValidation";
+import Input from "../../components/Input";
+import Button from "../../components/Button";
+import { numberValueIsValid } from "../../utils/inputValidation";
 
 class DebtItem extends React.Component {
   constructor(props) {

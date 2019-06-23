@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import BalanceController from './components/BalanceController';
+import BalanceController from './global-state/BalanceController';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(<BalanceController/>, document.getElementById('root'));

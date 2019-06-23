@@ -1,8 +1,8 @@
 import React from "react";
-import Incomes from "./Incomes";
-import Spendings from "./Spendings";
-import Debts from "./Debts";
-import PageNotfound from "./PageNotFound";
+import Incomes from "../pages/incomes/Incomes";
+import Spendings from "../pages/spendings/Spendings";
+import Debts from "../pages/debts/Debts";
+import PageNotfound from "../pages/404/PageNotFound";
 import { Route, Link, Switch, BrowserRouter as Router } from "react-router-dom";
 import { getLocalStorageItem } from "../utils/localStorage";
 

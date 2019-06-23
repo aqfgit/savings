@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Input from "./Input";
-import Select from "./Select";
-import Button from "./Button";
+import Input from "../../components/Input";
+import Select from "../../components/Select";
+import Button from "../../components/Button";
 import AddCategory from "./AddCategory";
-import { textValueIsValid, numberValueIsValid } from "../utils/inputValidation";
+import { textValueIsValid, numberValueIsValid } from "../../utils/inputValidation";
 
 class Spendings extends React.Component {
   constructor(props) {
