@@ -173,13 +173,13 @@ class Spendings extends React.Component {
     const history = this.state.expenses;
     const historyList = history.map(item => {
       return (
-        <li key={item.id}>
-            <span>{item.name} </span>
-            <span>{item.category} </span>
-            <span>{item.price}$ </span>
-            <span>{item.quantity} </span>
-            <span><button onClick={() => this.deleteExpense(item.id, item.price)}>Delete</button></span>
-          </li>
+        <tr key={item.id}>
+            <td>{item.name} </td>
+            <td>{item.category} </td>
+            <td>{item.price}$ </td>
+            <td>{item.quantity} </td>
+            <td><button onClick={() => this.deleteExpense(item.id, item.price)}>Delete</button></td>
+          </tr>
       );
     });
 
@@ -255,7 +255,19 @@ class Spendings extends React.Component {
           name="Add an expense"
         />
 
-        <ul>{historyList}</ul>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Quantity</th>
+            </tr>
+          </thead>
+          <tbody>
+          {historyList}
+          </tbody>
+        </table>
       </>
     );
   }

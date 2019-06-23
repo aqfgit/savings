@@ -155,11 +155,11 @@ class Income extends React.Component {
     const incomes = this.state.incomes.slice() ;
     const incomesList = incomes.map(item => {
       return (
-        <li key={item.id}>
-          <span>{item.name} </span>
-          <span>{item.value} / {item.timeUnit} </span>
-          <span><button onClick={() => this.deleteIncome(item.id)}>delete</button></span>
-        </li>
+        <tr key={item.id}>
+          <td>{item.name} </td>
+          <td>{item.value} / {item.timeUnit} </td>
+          <td><button onClick={() => this.deleteIncome(item.id)}>delete</button></td>
+        </tr>
       );
     });
 
@@ -187,9 +187,17 @@ class Income extends React.Component {
           style={valueInputBorder}
         />
         <Button onClick={this.addIncome} name="Add income" />
-        <ul>
-            {incomesList}
-        </ul>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Money</th>
+            </tr>
+          </thead>
+          <tbody>
+          {incomesList}
+          </tbody>
+        </table>
       </>
     );
   }

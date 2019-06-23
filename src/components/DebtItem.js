@@ -53,24 +53,23 @@ class DebtItem extends React.Component {
 
     return (
       <>
-      <h2>Incomes</h2>
-        <span>{this.props.name} </span>
-        <span>{moneyPaid} / {this.props.initialMoney} </span>
+        <td>{this.props.name} </td>
+        <td>{moneyPaid} / {this.props.initialMoney} </td>
         
         {
           !this.isDebtPaid(this.props.moneyPaid) && (
             <>
-              <Input
+              <td><Input
                 inputValue={this.state.inputValue}
                 onChange={this.handleValueInputChange}
                 dataType="number"
                 style={valueInputBorder}
-              />
-              <Button onClick={this.handlePayDebt} name="Pay" />
+              /></td>
+              <td><Button onClick={this.handlePayDebt} name="Pay" /></td>
             </>
           )
         }
-        <Button onClick={() => this.props.deleteDebt(this.props.id)} name="delete" />
+         <td><Button onClick={() => this.props.deleteDebt(this.props.id)} name="delete" /></td>
       </>
     );
   }

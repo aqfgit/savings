@@ -146,9 +146,9 @@ class Debts extends React.Component {
     const debts = this.state.debts;
     const debtsList = debts.map(item => {
       return (
-        <li key={item.id}>
+        <tr key={item.id}>
           <DebtItem id={item.id} name={item.name} initialMoney={item.initialMoney} moneyPaid={item.moneyPaid} payDebt={this.payDebt} deleteDebt={this.deleteDebt} />
-        </li>
+        </tr>
       )
     })
 
@@ -168,9 +168,17 @@ class Debts extends React.Component {
           style={valueInputBorder}
         />
         <Button onClick={this.addDebt} name="Add debt" />
-        <ul>
-            {debtsList}
-        </ul>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Money</th>
+            </tr>
+          </thead>
+          <tbody>
+          {debtsList}
+          </tbody>
+        </table>
       </>
     );
   }
