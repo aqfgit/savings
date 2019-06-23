@@ -9,7 +9,7 @@ import {
 } from "../utils/localStorage";
 import { textValueIsValid, numberValueIsValid } from "../utils/inputValidation";
 
-class Income extends React.Component {
+class Incomes extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -206,8 +206,8 @@ class Income extends React.Component {
   }
 }
 
-Income.propTypes = {
+Incomes.propTypes = {
   addToBudget: PropTypes.func.isRequired
 };
 
-export default Income;
+export default Incomes;

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Input from "./Input";
 import Button from "./Button";
-import Income from "./Income";
+import Incomes from "./Incomes";
 import { numberValueIsValid } from "../utils/inputValidation";
 
 class Budget extends React.Component {
@@ -53,7 +53,7 @@ class Budget extends React.Component {
         <Button onClick={this.handleAddToBudget} name="Add to budget" />
         <p>Balance: {this.props.balance}$</p>
 
-        <Income addToBudget={this.props.addToBudget} />
+        <Incomes addToBudget={this.props.addToBudget} />
       </>
     );
   }
