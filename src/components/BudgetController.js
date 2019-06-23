@@ -1,20 +1,18 @@
 import React from "react";
 import Budget from "./Budget";
 import Spendings from "./Spendings";
-import Debts from './Debts';
+import Debts from "./Debts";
 import PageNotfound from "./PageNotFound";
 import { Route, Link, Switch, BrowserRouter as Router } from "react-router-dom";
-import { getLocalStorageItem } from '../utils/localStorage';
-
+import { getLocalStorageItem } from "../utils/localStorage";
 
 class BudgetController extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      balance: getLocalStorageItem('balance') || 0,
+      balance: getLocalStorageItem("balance") || 0
     };
-
 
     this.addToBudget = this.addToBudget.bind(this);
     this.substractFromBudget = this.substractFromBudget.bind(this);
@@ -43,9 +41,9 @@ class BudgetController extends React.Component {
   }
 
   addToBudget(value) {
-    const intValue= parseInt(value);
+    const intValue = parseInt(value);
     this.setState(prevState => ({
-      balance: prevState.balance + intValue,
+      balance: prevState.balance + intValue
     }));
   }
 
@@ -79,8 +77,8 @@ class BudgetController extends React.Component {
               path="/"
               render={() => (
                 <Budget
-                addToBudget={this.addToBudget}
-                balance={this.state.balance}
+                  addToBudget={this.addToBudget}
+                  balance={this.state.balance}
                 />
               )}
             />
@@ -105,9 +103,7 @@ class BudgetController extends React.Component {
             <Route
               path="/debts"
               render={() => (
-                <Debts
-                substractFromBudget={this.substractFromBudget}
-                />
+                <Debts substractFromBudget={this.substractFromBudget} />
               )}
             />
             <Route component={PageNotfound} />

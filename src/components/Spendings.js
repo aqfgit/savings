@@ -1,10 +1,10 @@
 import React from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import Input from "./Input";
 import Select from "./Select";
 import Button from "./Button";
-import AddCategory from './AddCategory';
-import { textValueIsValid, numberValueIsValid } from '../utils/inputValidation';
+import AddCategory from "./AddCategory";
+import { textValueIsValid, numberValueIsValid } from "../utils/inputValidation";
 
 class Spendings extends React.Component {
   constructor(props) {
@@ -21,7 +21,7 @@ class Spendings extends React.Component {
       priceInputIsValid: false,
       quantityInputIsValid: true,
       nameInputIsValid: false,
-      categoryInputIsValid: false,
+      categoryInputIsValid: false
     };
 
     this.handleNameInputChange = this.handleNameInputChange.bind(this);
@@ -35,7 +35,7 @@ class Spendings extends React.Component {
 
   componentDidMount() {
     this.updateStateWithLocalStorage();
- 
+
     window.addEventListener(
       "beforeunload",
       this.saveStateToLocalStorage.bind(this)
@@ -52,7 +52,7 @@ class Spendings extends React.Component {
   }
 
   updateStateWithLocalStorage() {
-    const stateToUpdate = ['expenses', 'categories', 'idCounter'];
+    const stateToUpdate = ["expenses", "categories", "idCounter"];
     for (let key of stateToUpdate) {
       if (localStorage.hasOwnProperty(key)) {
         let value = localStorage.getItem(key);
@@ -68,7 +68,7 @@ class Spendings extends React.Component {
   }
 
   saveStateToLocalStorage() {
-    const stateToUpdate = ['expenses', 'categories', 'idCounter'];
+    const stateToUpdate = ["expenses", "categories", "idCounter"];
     for (let key of stateToUpdate) {
       localStorage.setItem(key, JSON.stringify(this.state[key]));
     }
@@ -76,38 +76,46 @@ class Spendings extends React.Component {
 
   addCategory(name) {
     const isCategoriesEmpty = !this.state.categories.length;
-    this.setState(prevState => ({
-      categories: prevState.categories.concat(name),
-    }),
-    () => {
-      if (isCategoriesEmpty) {
-        const newCategory = this.changeCategory();
-        this.handleCategoryInputChange(newCategory);
+    this.setState(
+      prevState => ({
+        categories: prevState.categories.concat(name)
+      }),
+      () => {
+        if (isCategoriesEmpty) {
+          const newCategory = this.changeCategory();
+          this.handleCategoryInputChange(newCategory);
+        }
       }
-    });
+    );
   }
 
   removeCategory(name) {
     const categories = this.state.categories.slice();
     const updatedCategories = categories.filter(cat => cat !== name);
-    this.setState(prevState => ({
-      categories: updatedCategories,
-    }),
-    () => {
-      const newCategory = this.changeCategory() || '';
-      this.handleCategoryInputChange(newCategory);
-    });
+    this.setState(
+      prevState => ({
+        categories: updatedCategories
+      }),
+      () => {
+        const newCategory = this.changeCategory() || "";
+        this.handleCategoryInputChange(newCategory);
+      }
+    );
   }
 
   changeCategory() {
     const categories = this.state.categories.slice();
     let newCategory = null;
-    categories.forEach(item => newCategory = item);
+    categories.forEach(item => (newCategory = item));
     return newCategory;
   }
 
   addExpense(name, category, value, quantity) {
-    if (!this.state.priceInputIsValid || !this.state.nameInputIsValid || !this.state.categoryInputIsValid) {
+    if (
+      !this.state.priceInputIsValid ||
+      !this.state.nameInputIsValid ||
+      !this.state.categoryInputIsValid
+    ) {
       return;
     }
     const price = parseInt(value);
@@ -118,12 +126,12 @@ class Spendings extends React.Component {
       id,
       expenses: expenses.concat({ name, category, price, quantity, id }),
       idCounter: id + 1,
-      priceValue: '',
-      nameValue: '',
+      priceValue: "",
+      nameValue: "",
       quantityValue: 1,
       priceInputIsValid: false,
       nameInputIsValid: false,
-      quantityInputIsValid: true,
+      quantityInputIsValid: true
     });
     this.props.substractFromBudget(price);
   }
@@ -132,9 +140,9 @@ class Spendings extends React.Component {
     const expenses = this.state.expenses.slice();
     const updatedExpenses = expenses.filter(item => item.id !== id);
     this.setState({
-      expenses: updatedExpenses,
+      expenses: updatedExpenses
     });
-    this.props.addToBudget(cashback)
+    this.props.addToBudget(cashback);
   }
 
   handleNameInputChange(name) {
@@ -154,7 +162,7 @@ class Spendings extends React.Component {
   }
 
   handlePriceInputChange(value) {
-    const isInputValid = numberValueIsValid(value)
+    const isInputValid = numberValueIsValid(value);
     this.setState({
       priceValue: value,
       priceInputIsValid: isInputValid
@@ -162,7 +170,7 @@ class Spendings extends React.Component {
   }
 
   handleQuantityInputChange(value) {
-    const isInputValid = numberValueIsValid(value)
+    const isInputValid = numberValueIsValid(value);
     this.setState({
       quantityValue: value,
       quantityInputIsValid: isInputValid
@@ -174,32 +182,38 @@ class Spendings extends React.Component {
     const historyList = history.map(item => {
       return (
         <tr key={item.id}>
-            <td>{item.name} </td>
-            <td>{item.category} </td>
-            <td>{item.price}$ </td>
-            <td>{item.quantity} </td>
-            <td><button onClick={() => this.deleteExpense(item.id, item.price)}>Delete</button></td>
-          </tr>
+          <td>{item.name} </td>
+          <td>{item.category} </td>
+          <td>{item.price}$ </td>
+          <td>{item.quantity} </td>
+          <td>
+            <button onClick={() => this.deleteExpense(item.id, item.price)}>
+              Delete
+            </button>
+          </td>
+        </tr>
       );
     });
 
     const categoryOptions = this.state.categories.map(item => {
       return (
-        <option key={item} value={item}>{item}</option>
-      )
-    })
+        <option key={item} value={item}>
+          {item}
+        </option>
+      );
+    });
 
     const priceInputBorder = {
-      border: (this.state.priceInputIsValid) ? null : '1px solid red',
+      border: this.state.priceInputIsValid ? null : "1px solid red"
     };
     const quantityInputBorder = {
-      border: (this.state.quantityInputIsValid) ? null : '1px solid red',
+      border: this.state.quantityInputIsValid ? null : "1px solid red"
     };
     const categoryInputBorder = {
-      border: (this.state.categoryInputIsValid) ? null : '1px solid red',
+      border: this.state.categoryInputIsValid ? null : "1px solid red"
     };
     const nameInputBorder = {
-      border: (this.state.nameInputIsValid) ? null : '1px solid red',
+      border: this.state.nameInputIsValid ? null : "1px solid red"
     };
 
     return (
@@ -223,7 +237,11 @@ class Spendings extends React.Component {
           >
             {categoryOptions}
           </Select>
-          <AddCategory addCategory={this.addCategory} categories={this.state.categories} removeCategory={this.removeCategory}/>
+          <AddCategory
+            addCategory={this.addCategory}
+            categories={this.state.categories}
+            removeCategory={this.removeCategory}
+          />
         </div>
         <div>
           <Input
@@ -264,9 +282,7 @@ class Spendings extends React.Component {
               <th>Quantity</th>
             </tr>
           </thead>
-          <tbody>
-          {historyList}
-          </tbody>
+          <tbody>{historyList}</tbody>
         </table>
       </>
     );
@@ -275,7 +291,7 @@ class Spendings extends React.Component {
 
 Spendings.propTypes = {
   addToBudget: PropTypes.func.isRequired,
-  substractFromBudget: PropTypes.func.isRequired,
-}
+  substractFromBudget: PropTypes.func.isRequired
+};
 
 export default Spendings;

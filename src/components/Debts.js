@@ -1,25 +1,22 @@
 import React from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import Input from "./Input";
 import Button from "./Button";
-import DebtItem from './DebtItem';
-import { numberValueIsValid, textValueIsValid } from '../utils/inputValidation';
-
+import DebtItem from "./DebtItem";
+import { numberValueIsValid, textValueIsValid } from "../utils/inputValidation";
 
 class Debts extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.state = {
       debts: [],
-      inputName: '',
-      inputValue: '',
+      inputName: "",
+      inputValue: "",
       idCounter: 0,
       valueInputIsValid: false,
-      nameInputIsValid: false,
+      nameInputIsValid: false
     };
-
 
     this.handleValueInputChange = this.handleValueInputChange.bind(this);
     this.handleNameInputChange = this.handleNameInputChange.bind(this);
@@ -47,7 +44,7 @@ class Debts extends React.Component {
   }
 
   updateStateWithLocalStorage() {
-    const stateToUpdate = ['debts', 'idCounter'];
+    const stateToUpdate = ["debts", "idCounter"];
     for (let key of stateToUpdate) {
       if (localStorage.hasOwnProperty(key)) {
         let value = localStorage.getItem(key);
@@ -63,17 +60,17 @@ class Debts extends React.Component {
   }
 
   saveStateToLocalStorage() {
-    const stateToUpdate = ['debts', 'idCounter'];
+    const stateToUpdate = ["debts", "idCounter"];
     for (let key of stateToUpdate) {
       localStorage.setItem(key, JSON.stringify(this.state[key]));
     }
   }
 
   handleValueInputChange(value) {
-    const isInputValid = numberValueIsValid(value)
+    const isInputValid = numberValueIsValid(value);
     this.setState({
       inputValue: value,
-      valueInputIsValid: isInputValid,
+      valueInputIsValid: isInputValid
     });
   }
 
@@ -81,10 +78,10 @@ class Debts extends React.Component {
     const isInputValid = textValueIsValid(name);
     this.setState({
       inputName: name,
-      nameInputIsValid: isInputValid,
+      nameInputIsValid: isInputValid
     });
   }
-  
+
   addDebt() {
     const value = this.state.inputValue;
     const intValue = parseInt(value);
@@ -92,7 +89,7 @@ class Debts extends React.Component {
     if (!this.state.valueInputIsValid || !this.state.nameInputIsValid) {
       return;
     }
-   
+
     const id = this.state.idCounter;
 
     this.setState(prevState => ({
@@ -100,21 +97,21 @@ class Debts extends React.Component {
         id,
         name: this.state.inputName,
         initialMoney: intValue,
-        moneyPaid: 0,
+        moneyPaid: 0
       }),
       idCounter: id + 1,
-      inputValue: '',
-      inputName: '',
+      inputValue: "",
+      inputName: "",
       valueInputIsValid: false,
-      nameInputIsValid: false,
+      nameInputIsValid: false
     }));
   }
 
   deleteDebt(id) {
     const debts = this.state.debts.slice();
-    const updatedDebts= debts.filter(item => item.id !== id);
+    const updatedDebts = debts.filter(item => item.id !== id);
     this.setState({
-      debts: updatedDebts,
+      debts: updatedDebts
     });
   }
 
@@ -125,36 +122,42 @@ class Debts extends React.Component {
     debts[index].moneyPaid += intMoney;
     const newMoneyPaid = debts[index].moneyPaid;
     const initialMoney = debts[index].initialMoney;
-    const rest = newMoneyPaid <= initialMoney ? 0 : (newMoneyPaid - initialMoney)
+    const rest = newMoneyPaid <= initialMoney ? 0 : newMoneyPaid - initialMoney;
     this.props.substractFromBudget(money - rest);
 
     this.setState({
-      debts,
+      debts
     });
   }
 
   render() {
-    
     const valueInputBorder = {
-      border: (this.state.valueInputIsValid) ? null : '1px solid red',
+      border: this.state.valueInputIsValid ? null : "1px solid red"
     };
 
     const nameInputBorder = {
-      border: (this.state.nameInputIsValid) ? null : '1px solid red',
+      border: this.state.nameInputIsValid ? null : "1px solid red"
     };
 
     const debts = this.state.debts;
     const debtsList = debts.map(item => {
       return (
         <tr key={item.id}>
-          <DebtItem id={item.id} name={item.name} initialMoney={item.initialMoney} moneyPaid={item.moneyPaid} payDebt={this.payDebt} deleteDebt={this.deleteDebt} />
+          <DebtItem
+            id={item.id}
+            name={item.name}
+            initialMoney={item.initialMoney}
+            moneyPaid={item.moneyPaid}
+            payDebt={this.payDebt}
+            deleteDebt={this.deleteDebt}
+          />
         </tr>
-      )
-    })
+      );
+    });
 
     return (
       <>
-      <h2>Debts</h2>
+        <h2>Debts</h2>
         <Input
           inputValue={this.state.inputName}
           onChange={this.handleNameInputChange}
@@ -175,9 +178,7 @@ class Debts extends React.Component {
               <th>Money</th>
             </tr>
           </thead>
-          <tbody>
-          {debtsList}
-          </tbody>
+          <tbody>{debtsList}</tbody>
         </table>
       </>
     );
@@ -185,7 +186,7 @@ class Debts extends React.Component {
 }
 
 Debts.propTypes = {
-  substractFromBudget: PropTypes.func.isRequired,
+  substractFromBudget: PropTypes.func.isRequired
 };
 
 export default Debts;
