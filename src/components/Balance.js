@@ -2,10 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import Input from "./Input";
 import Button from "./Button";
-import Incomes from "./Incomes";
 import { numberValueIsValid } from "../utils/inputValidation";
 
-class Budget extends React.Component {
+class Balance extends React.Component {
   constructor(props) {
     super(props);
 
@@ -43,7 +42,7 @@ class Budget extends React.Component {
     };
     return (
       <>
-        <h2>My budget</h2>
+        <h3>Balance</h3>
         <Input
           inputValue={this.state.balanceInputValue}
           onChange={this.handleBalanceInputChange}
@@ -51,17 +50,16 @@ class Budget extends React.Component {
           style={inputBorder}
         />
         <Button onClick={this.handleAddToBudget} name="Add to budget" />
-        <p>Balance: {this.props.balance}$</p>
+        <p>My Balance: {this.props.balance}$</p>
 
-        <Incomes addToBudget={this.props.addToBudget} />
       </>
     );
   }
 }
 
-Budget.propTypes = {
+Balance.propTypes = {
   balance: PropTypes.number.isRequired,
   addToBudget: PropTypes.func.isRequired
 };
 
-export default Budget;
+export default Balance;

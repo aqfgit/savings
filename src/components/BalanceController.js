@@ -1,12 +1,12 @@
 import React from "react";
-import Budget from "./Budget";
+import Incomes from "./Incomes";
 import Spendings from "./Spendings";
 import Debts from "./Debts";
 import PageNotfound from "./PageNotFound";
 import { Route, Link, Switch, BrowserRouter as Router } from "react-router-dom";
 import { getLocalStorageItem } from "../utils/localStorage";
 
-class BudgetController extends React.Component {
+class BalanceController extends React.Component {
   constructor(props) {
     super(props);
 
@@ -61,7 +61,7 @@ class BudgetController extends React.Component {
           <nav>
             <ul>
               <li>
-                <Link to="/budget">Budget</Link>
+                <Link to="/incomes">Incomes</Link>
               </li>
               <li>
                 <Link to="/spendings">Spendings</Link>
@@ -76,16 +76,16 @@ class BudgetController extends React.Component {
               exact
               path="/"
               render={() => (
-                <Budget
+                <Incomes
                   addToBudget={this.addToBudget}
                   balance={this.state.balance}
                 />
               )}
             />
             <Route
-              path="/budget"
+              path="/incomes"
               render={() => (
-                <Budget
+                <Incomes
                   addToBudget={this.addToBudget}
                   balance={this.state.balance}
                 />
@@ -114,4 +114,4 @@ class BudgetController extends React.Component {
   }
 }
 
-export default BudgetController;
+export default BalanceController;
