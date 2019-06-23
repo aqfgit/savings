@@ -47,7 +47,8 @@ class Debts extends React.Component {
   }
 
   updateStateWithLocalStorage() {
-    for (let key in this.state) {
+    const stateToUpdate = ['debts', 'idCounter'];
+    for (let key of stateToUpdate) {
       if (localStorage.hasOwnProperty(key)) {
         let value = localStorage.getItem(key);
 
@@ -62,7 +63,8 @@ class Debts extends React.Component {
   }
 
   saveStateToLocalStorage() {
-    for (let key in this.state) {
+    const stateToUpdate = ['debts', 'idCounter'];
+    for (let key of stateToUpdate) {
       localStorage.setItem(key, JSON.stringify(this.state[key]));
     }
   }
@@ -144,7 +146,7 @@ class Debts extends React.Component {
     const debts = this.state.debts;
     const debtsList = debts.map(item => {
       return (
-        <li>
+        <li key={item.id}>
           <DebtItem id={item.id} name={item.name} initialMoney={item.initialMoney} moneyPaid={item.moneyPaid} payDebt={this.payDebt} deleteDebt={this.deleteDebt} />
         </li>
       )
