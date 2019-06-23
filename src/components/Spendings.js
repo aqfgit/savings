@@ -52,7 +52,8 @@ class Spendings extends React.Component {
   }
 
   updateStateWithLocalStorage() {
-    for (let key in this.state) {
+    const stateToUpdate = ['expenses', 'categories', 'idCounter'];
+    for (let key of stateToUpdate) {
       if (localStorage.hasOwnProperty(key)) {
         let value = localStorage.getItem(key);
 
@@ -67,7 +68,8 @@ class Spendings extends React.Component {
   }
 
   saveStateToLocalStorage() {
-    for (let key in this.state) {
+    const stateToUpdate = ['expenses', 'categories', 'idCounter'];
+    for (let key of stateToUpdate) {
       localStorage.setItem(key, JSON.stringify(this.state[key]));
     }
   }
