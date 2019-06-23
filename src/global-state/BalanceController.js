@@ -74,16 +74,7 @@ class BalanceController extends React.Component {
           <Switch>
             <Route
               exact
-              path="/"
-              render={() => (
-                <Incomes
-                  addToBudget={this.addToBudget}
-                  balance={this.state.balance}
-                />
-              )}
-            />
-            <Route
-              path="/incomes"
+              path={['/', '/incomes']}
               render={() => (
                 <Incomes
                   addToBudget={this.addToBudget}
