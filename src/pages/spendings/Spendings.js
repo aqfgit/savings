@@ -5,6 +5,8 @@ import Select from "../../components/Select";
 import Button from "../../components/Button";
 import AddCategory from "./AddCategory";
 import { textValueIsValid, numberValueIsValid } from "../../utils/inputValidation";
+import {CategoriesContext} from "../../global-state/CategoriesContext";
+
 
 class Spendings extends React.Component {
   constructor(props) {
@@ -16,7 +18,6 @@ class Spendings extends React.Component {
       priceValue: 0,
       quantityValue: 1,
       expenses: [],
-      categories: [],
       idCounter: 0,
       priceInputIsValid: false,
       quantityInputIsValid: true,
@@ -29,8 +30,7 @@ class Spendings extends React.Component {
     this.handlePriceInputChange = this.handlePriceInputChange.bind(this);
     this.handleQuantityInputChange = this.handleQuantityInputChange.bind(this);
     this.addExpense = this.addExpense.bind(this);
-    this.addCategory = this.addCategory.bind(this);
-    this.removeCategory = this.removeCategory.bind(this);
+    
   }
 
   componentDidMount() {
@@ -52,7 +52,7 @@ class Spendings extends React.Component {
   }
 
   updateStateWithLocalStorage() {
-    const stateToUpdate = ["expenses", "categories", "idCounter"];
+    const stateToUpdate = ["expenses", "idCounter"];
     for (let key of stateToUpdate) {
       if (localStorage.hasOwnProperty(key)) {
         let value = localStorage.getItem(key);
@@ -68,47 +68,13 @@ class Spendings extends React.Component {
   }
 
   saveStateToLocalStorage() {
-    const stateToUpdate = ["expenses", "categories", "idCounter"];
+    const stateToUpdate = ["expenses", "idCounter"];
     for (let key of stateToUpdate) {
       localStorage.setItem(key, JSON.stringify(this.state[key]));
     }
   }
 
-  addCategory(name) {
-    const isCategoriesEmpty = !this.state.categories.length;
-    this.setState(
-      prevState => ({
-        categories: prevState.categories.concat(name)
-      }),
-      () => {
-        if (isCategoriesEmpty) {
-          const newCategory = this.changeCategory();
-          this.handleCategoryInputChange(newCategory);
-        }
-      }
-    );
-  }
-
-  removeCategory(name) {
-    const categories = this.state.categories.slice();
-    const updatedCategories = categories.filter(cat => cat !== name);
-    this.setState(
-      prevState => ({
-        categories: updatedCategories
-      }),
-      () => {
-        const newCategory = this.changeCategory() || "";
-        this.handleCategoryInputChange(newCategory);
-      }
-    );
-  }
-
-  changeCategory() {
-    const categories = this.state.categories.slice();
-    let newCategory = null;
-    categories.forEach(item => (newCategory = item));
-    return newCategory;
-  }
+ 
 
   addExpense(name, category, value, quantity) {
     if (
@@ -195,14 +161,6 @@ class Spendings extends React.Component {
       );
     });
 
-    const categoryOptions = this.state.categories.map(item => {
-      return (
-        <option key={item} value={item}>
-          {item}
-        </option>
-      );
-    });
-
     const priceInputBorder = {
       border: this.state.priceInputIsValid ? null : "1px solid red"
     };
@@ -235,13 +193,17 @@ class Spendings extends React.Component {
             label="Category"
             style={categoryInputBorder}
           >
-            {categoryOptions}
+            <CategoriesContext.Consumer>
+              {context => (
+                  context.state.categories.map(item => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))
+              )}
+            </CategoriesContext.Consumer>
           </Select>
-          <AddCategory
-            addCategory={this.addCategory}
-            categories={this.state.categories}
-            removeCategory={this.removeCategory}
-          />
+          <AddCategory/>
         </div>
         <div>
           <Input

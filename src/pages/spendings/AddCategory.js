@@ -1,8 +1,8 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import { textValueIsValid } from "../../utils/inputValidation";
+import { CategoriesContext } from "../../global-state/CategoriesContext";
 
 class AddCategory extends React.Component {
   constructor(props) {
@@ -40,19 +40,6 @@ class AddCategory extends React.Component {
   }
 
   render() {
-    const categories = this.props.categories;
-    const categoriesList = categories.map(item => {
-      return (
-        <li key={item + "id"}>
-          {item}{" "}
-          <Button
-            onClick={() => this.props.removeCategory(item)}
-            name="delete"
-          />
-        </li>
-      );
-    });
-
     const border = {
       border: this.state.inputIsValid ? null : "1px solid red"
     };
@@ -69,18 +56,50 @@ class AddCategory extends React.Component {
         </span>
         {this.state.isOpen && (
           <>
-            <div>{categoriesList}</div>
             <div>
-              <Input
-                inputValue={this.state.inputValue}
-                onChange={this.handleInputChange}
-                dataType="text"
-                style={border}
-              />
-              <Button onClick={this.handleAddCategory} name="Add category" />
-              {this.state.recentlyAdded && (
-                <p>{this.state.recentlyAdded} category has been added.</p>
-              )}
+              <CategoriesContext.Consumer>
+                {context =>
+                  context.state.categories.map(item => (
+                    <li key={item + "id"}>
+                      {item}{" "}
+                      <Button
+                        onClick={() => context.removeCategory(item)}
+                        name="delete"
+                      />
+                    </li>
+                  ))
+                }
+              </CategoriesContext.Consumer>
+            </div>
+            <div>
+              <CategoriesContext.Consumer>
+                {context => (
+                  <>
+                    <Input
+                      inputValue={this.state.inputValue}
+                      onChange={this.handleInputChange}
+                      dataType="text"
+                      style={border}
+                    />
+                    <Button
+                      onClick={() => {
+                        if (this.state.inputIsValid) {
+                          context.addCategory(this.state.inputValue);
+                          this.setState(prevState => ({
+                            recentlyAdded: prevState.inputValue,
+                            inputValue: "",
+                            inputIsValid: false
+                          }));
+                        }
+                      }}
+                      name="Add category"
+                    />
+                    {this.state.recentlyAdded && (
+                      <p>{this.state.recentlyAdded} category has been added.</p>
+                    )}
+                  </>
+                )}
+              </CategoriesContext.Consumer>
             </div>
           </>
         )}
@@ -88,10 +107,5 @@ class AddCategory extends React.Component {
     );
   }
 }
-
-AddCategory.propTypes = {
-  addCategory: PropTypes.func.isRequired,
-  categories: PropTypes.array.isRequired
-};
 
 export default AddCategory;

@@ -2,9 +2,11 @@ import React from "react";
 import Incomes from "../pages/incomes/Incomes";
 import Spendings from "../pages/spendings/Spendings";
 import Debts from "../pages/debts/Debts";
+import Budgets from "../pages/budgets/Budgets";
 import PageNotfound from "../pages/404/PageNotFound";
 import { Route, Link, Switch, BrowserRouter as Router } from "react-router-dom";
 import { getLocalStorageItem } from "../utils/localStorage";
+import {CategoriesProvider} from "./CategoriesContext";
 
 class BalanceController extends React.Component {
   constructor(props) {
@@ -69,6 +71,9 @@ class BalanceController extends React.Component {
               <li>
                 <Link to="/debts">Debts</Link>
               </li>
+              <li>
+                <Link to="/budgets">Budgets</Link>
+              </li>
             </ul>
           </nav>
           <Switch>
@@ -85,16 +90,26 @@ class BalanceController extends React.Component {
             <Route
               path="/spendings"
               render={() => (
-                <Spendings
-                  substractFromBudget={this.substractFromBudget}
-                  addToBudget={this.addToBudget}
-                />
+                <CategoriesProvider>
+                  <Spendings
+                    substractFromBudget={this.substractFromBudget}
+                    addToBudget={this.addToBudget}
+                  />
+                </CategoriesProvider>
               )}
             />
             <Route
               path="/debts"
               render={() => (
                 <Debts substractFromBudget={this.substractFromBudget} />
+              )}
+            />
+            <Route
+              path="/budgets"
+              render={() => (
+                <CategoriesProvider>
+                  <Budgets  />
+                </CategoriesProvider>
               )}
             />
             <Route component={PageNotfound} />
