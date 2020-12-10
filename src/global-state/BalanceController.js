@@ -5,16 +5,16 @@ import Debts from "../pages/debts/Debts";
 import Budgets from "../pages/budgets/Budgets";
 import PageNotfound from "../pages/404/PageNotFound";
 import { Route, Link, Switch, BrowserRouter as Router } from "react-router-dom";
-import { getLocalStorageItem, setLocalStorageItem } from "../utils/localStorage";
-import {CategoriesProvider} from "./CategoriesContext";
-import {SpendingsProvider} from "./SpendingsContext";
+import { getLocalStorageItem } from "../utils/localStorage";
+import { CategoriesProvider } from "./CategoriesContext";
+import { SpendingsProvider } from "./SpendingsContext";
 
 class BalanceController extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      balance: getLocalStorageItem("balance") || 0
+      balance: getLocalStorageItem("balance") || 0,
     };
 
     this.addToBudget = this.addToBudget.bind(this);
@@ -48,14 +48,14 @@ class BalanceController extends React.Component {
     if (Number.isNaN(intValue)) {
       intValue = 0;
     }
-    this.setState(prevState => ({
-      balance: prevState.balance + intValue
+    this.setState((prevState) => ({
+      balance: prevState.balance + intValue,
     }));
   }
 
   substractFromBudget(price) {
-    this.setState(prevState => ({
-      balance: prevState.balance - price
+    this.setState((prevState) => ({
+      balance: prevState.balance - price,
     }));
   }
 
@@ -83,7 +83,7 @@ class BalanceController extends React.Component {
           <Switch>
             <Route
               exact
-              path={['/', '/incomes']}
+              path={["/", "/incomes"]}
               render={() => (
                 <Incomes
                   addToBudget={this.addToBudget}
@@ -94,7 +94,10 @@ class BalanceController extends React.Component {
             <Route
               path="/spendings"
               render={() => (
-                <SpendingsProvider substractFromBudget={this.substractFromBudget} addToBudget={this.addToBudget}>
+                <SpendingsProvider
+                  substractFromBudget={this.substractFromBudget}
+                  addToBudget={this.addToBudget}
+                >
                   <CategoriesProvider>
                     <Spendings
                       substractFromBudget={this.substractFromBudget}
@@ -115,7 +118,7 @@ class BalanceController extends React.Component {
               render={() => (
                 <SpendingsProvider>
                   <CategoriesProvider>
-                    <Budgets  />
+                    <Budgets />
                   </CategoriesProvider>
                 </SpendingsProvider>
               )}

@@ -5,9 +5,12 @@ import Button from "../../components/Button";
 import {
   getLocalStorageItem,
   getDateFromLocalStorage,
-  addDateToLocalStorage
+  addDateToLocalStorage,
 } from "../../utils/localStorage";
-import { textValueIsValid, numberValueIsValid } from "../../utils/inputValidation";
+import {
+  textValueIsValid,
+  numberValueIsValid,
+} from "../../utils/inputValidation";
 
 class IncomeSources extends React.Component {
   constructor(props) {
@@ -18,7 +21,7 @@ class IncomeSources extends React.Component {
       inputValue: "",
       idCounter: 0,
       valueInputIsValid: false,
-      nameInputIsValid: false
+      nameInputIsValid: false,
     };
 
     this.handleValueInputChange = this.handleValueInputChange.bind(this);
@@ -36,19 +39,19 @@ class IncomeSources extends React.Component {
     const lastTime = getDateFromLocalStorage("lastIncomeUpadte") || new Date();
     const timeDiff = Math.round((new Date() - lastTime) / 1000) || 1;
 
-    this.state.incomes.forEach(item => {
+    this.state.incomes.forEach((item) => {
       this.props.addToBudget(timeDiff * item.value);
 
       const incomes = this.state.incomes.slice();
-      const currentIncome = incomes.find(income => income.name === item.name);
+      const currentIncome = incomes.find((income) => income.name === item.name);
       const interval = setInterval(() => {
         this.props.addToBudget(item.value);
         addDateToLocalStorage("lastIncomeUpadte", new Date());
       }, item.frequency);
 
       currentIncome.interval = interval;
-      this.setState(prevState => ({
-        incomes: incomes
+      this.setState(() => ({
+        incomes: incomes,
       }));
     });
   }
@@ -60,7 +63,7 @@ class IncomeSources extends React.Component {
     );
 
     addDateToLocalStorage("lastIncomeUpadte", new Date());
-    this.state.incomes.forEach(item => {
+    this.state.incomes.forEach((item) => {
       clearInterval(item.interval);
     });
 
@@ -70,7 +73,7 @@ class IncomeSources extends React.Component {
   updateStateWithLocalStorage() {
     const stateToUpdate = ["incomes", "idCounter"];
     for (let key of stateToUpdate) {
-      if (localStorage.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
         let value = localStorage.getItem(key);
 
         try {
@@ -94,7 +97,7 @@ class IncomeSources extends React.Component {
     const isInputValid = numberValueIsValid(value);
     this.setState({
       inputValue: value,
-      valueInputIsValid: isInputValid
+      valueInputIsValid: isInputValid,
     });
   }
 
@@ -102,7 +105,7 @@ class IncomeSources extends React.Component {
     const isInputValid = textValueIsValid(name);
     this.setState({
       inputName: name,
-      nameInputIsValid: isInputValid
+      nameInputIsValid: isInputValid,
     });
   }
 
@@ -120,41 +123,41 @@ class IncomeSources extends React.Component {
 
     const id = this.state.idCounter;
 
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       incomes: prevState.incomes.concat({
         id,
         name: this.state.inputName,
         value: intValue,
         frequency: 1000,
         timeUnit: "second",
-        interval: interval
+        interval: interval,
       }),
       idCounter: id + 1,
       inputValue: "",
       inputName: "",
       valueInputIsValid: false,
-      nameInputIsValid: false
+      nameInputIsValid: false,
     }));
   }
 
   deleteIncome(id) {
     const incomes = this.state.incomes.slice();
-    incomes.forEach(item => {
+    incomes.forEach((item) => {
       if (item.id === id) {
         clearInterval(item.interval);
         return;
       }
     });
 
-    const updatedIncomes = incomes.filter(item => item.id !== id);
+    const updatedIncomes = incomes.filter((item) => item.id !== id);
     this.setState({
-      incomes: updatedIncomes
+      incomes: updatedIncomes,
     });
   }
 
   render() {
     const incomes = this.state.incomes.slice();
-    const incomesList = incomes.map(item => {
+    const incomesList = incomes.map((item) => {
       return (
         <tr key={item.id}>
           <td>{item.name} </td>
@@ -169,14 +172,12 @@ class IncomeSources extends React.Component {
     });
 
     const valueInputBorder = {
-      border: this.state.valueInputIsValid ? null : "1px solid red"
+      border: this.state.valueInputIsValid ? null : "1px solid red",
     };
 
     const nameInputBorder = {
-      border: this.state.nameInputIsValid ? null : "1px solid red"
+      border: this.state.nameInputIsValid ? null : "1px solid red",
     };
-
-    
 
     return (
       <>
@@ -209,7 +210,7 @@ class IncomeSources extends React.Component {
 }
 
 IncomeSources.propTypes = {
-  addToBudget: PropTypes.func.isRequired
+  addToBudget: PropTypes.func.isRequired,
 };
 
 export default IncomeSources;

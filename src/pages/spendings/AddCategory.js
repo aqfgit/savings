@@ -1,22 +1,20 @@
 import React from "react";
-import Input from "../../components/Input";
 import Button from "../../components/Button";
-import { textValueIsValid } from "../../utils/inputValidation";
 import { CategoriesContext } from "../../global-state/CategoriesContext";
 
 const initialFieldsState = {
   fieldsValues: {
-    newCategory: '',
+    newCategory: "",
   },
   fieldsValid: {
     newCategory: false,
   },
 };
 
-const formValid = ({ fieldsValid, fieldsValues }) => {
+const formValid = ({ fieldsValid }) => {
   let valid = true;
 
-  Object.values(fieldsValid).forEach(isValid => {
+  Object.values(fieldsValid).forEach((isValid) => {
     if (!isValid) {
       valid = false;
       return;
@@ -42,7 +40,7 @@ class AddCategory extends React.Component {
 
   handleInputChange(e) {
     const { name, value } = e.target;
-    let fieldsValid = {...this.state.fieldsValid};
+    let fieldsValid = { ...this.state.fieldsValid };
     if (name === "newCategory") {
       fieldsValid.newCategory = value.length > 0;
     }
@@ -54,9 +52,11 @@ class AddCategory extends React.Component {
   }
 
   render() {
-
-    const showNewCategoryError = !this.state.fieldsValid.newCategory && this.state.showErrors;
-    const newCategoryErrorMessage = showNewCategoryError ? 'Name cant be blank' : null;
+    const showNewCategoryError =
+      !this.state.fieldsValid.newCategory && this.state.showErrors;
+    const newCategoryErrorMessage = showNewCategoryError
+      ? "Name cant be blank"
+      : null;
 
     return (
       <>
@@ -65,7 +65,7 @@ class AddCategory extends React.Component {
             Add category
             <Button
               onClick={() =>
-                this.setState(prevState => ({ isOpen: !prevState.isOpen }))
+                this.setState((prevState) => ({ isOpen: !prevState.isOpen }))
               }
               name={this.state.isOpen ? "-" : "+"}
             />
@@ -74,8 +74,8 @@ class AddCategory extends React.Component {
             <>
               <div>
                 <CategoriesContext.Consumer>
-                  {context =>
-                    context.state.categories.map(item => (
+                  {(context) =>
+                    context.state.categories.map((item) => (
                       <li key={item + "id"}>
                         {item}{" "}
                         <Button
@@ -89,30 +89,28 @@ class AddCategory extends React.Component {
               </div>
               <div>
                 <CategoriesContext.Consumer>
-                  {context => (
+                  {(context) => (
                     <>
                       <form
-                        onSubmit={e => {
-                          const newCategory = this.state.fieldsValues.newCategory;
+                        onSubmit={(e) => {
+                          const newCategory = this.state.fieldsValues
+                            .newCategory;
                           e.preventDefault();
                           if (context.isNameDuplicate(newCategory)) {
-                            console.log('DUPLICATE NAME ', newCategory);
+                            console.log("DUPLICATE NAME ", newCategory);
                             return;
                           }
                           if (formValid(this.state)) {
-                            context.addCategory(
-                              newCategory
-                            );
-                            this.setState(prevState => ({
+                            context.addCategory(newCategory);
+                            this.setState(() => ({
                               recentlyAdded: newCategory,
                               ...initialFieldsState,
                               showErrors: false,
                             }));
                           } else {
                             console.log("INVALID FORM");
-                            this.setState({showErrors: true});
+                            this.setState({ showErrors: true });
                           }
-
                         }}
                         noValidate
                       >
@@ -123,7 +121,11 @@ class AddCategory extends React.Component {
                           onChange={this.handleInputChange}
                           type="text"
                           name="newCategory"
-                          style={{border: showNewCategoryError ? '1px solid red' : null}}
+                          style={{
+                            border: showNewCategoryError
+                              ? "1px solid red"
+                              : null,
+                          }}
                         />
                         <button type="submit">Add category</button>
                       </form>

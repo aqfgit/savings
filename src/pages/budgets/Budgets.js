@@ -1,10 +1,7 @@
 import React from "react";
-import PropTypes from "prop-types";
-import Input from "../../components/Input";
-import Button from "../../components/Button";
 import { numberValueIsValid } from "../../utils/inputValidation";
-import {CategoriesContext} from "../../global-state/CategoriesContext";
-import {SpendingsContext} from "../../global-state/SpendingsContext";
+import { CategoriesContext } from "../../global-state/CategoriesContext";
+import { SpendingsContext } from "../../global-state/SpendingsContext";
 
 class Budgets extends React.Component {
   constructor(props) {
@@ -12,7 +9,7 @@ class Budgets extends React.Component {
 
     this.state = {
       balanceInputValue: "",
-      balanceInputIsValid: false
+      balanceInputIsValid: false,
     };
 
     this.handleBalanceInputChange = this.handleBalanceInputChange.bind(this);
@@ -23,7 +20,7 @@ class Budgets extends React.Component {
     const isInputValid = numberValueIsValid(value);
     this.setState({
       balanceInputValue: value,
-      balanceInputIsValid: isInputValid
+      balanceInputIsValid: isInputValid,
     });
   }
 
@@ -34,46 +31,45 @@ class Budgets extends React.Component {
     this.props.addToBudget(this.state.balanceInputValue);
     this.setState({
       balanceInputValue: "",
-      balanceInputIsValid: false
+      balanceInputIsValid: false,
     });
   }
 
   render() {
     return (
       <>
-      <h2>Budgets</h2>
-      <ul>
-      <SpendingsContext.Consumer>
-        {spendingsContext => (
-
-        <CategoriesContext.Consumer>
-            {categoriesContext => (
-
-                categoriesContext.state.categories.map(item => (
-                  <li key={item}>
-                    {item}
-                    {<div>{spendingsContext.state.expenses.reduce((sum, n) => {
-                      if (n.category === item) {
-                        return sum += (parseInt(n.price) * parseInt(n.quantity))
+        <h2>Budgets</h2>
+        <ul>
+          <SpendingsContext.Consumer>
+            {(spendingsContext) => (
+              <CategoriesContext.Consumer>
+                {(categoriesContext) =>
+                  categoriesContext.state.categories.map((item) => (
+                    <li key={item}>
+                      {item}
+                      {
+                        <div>
+                          {spendingsContext.state.expenses.reduce((sum, n) => {
+                            if (n.category === item) {
+                              return (sum +=
+                                parseInt(n.price) * parseInt(n.quantity));
+                            }
+                            return (sum += 0);
+                          }, 0)}
+                        </div>
                       }
-                      return sum += 0;
-            }       ,0)}</div>}
-                  </li>
-                ))
+                    </li>
+                  ))
+                }
+              </CategoriesContext.Consumer>
             )}
-        </CategoriesContext.Consumer>
-        )}
-      </SpendingsContext.Consumer>
-      </ul>
-
+          </SpendingsContext.Consumer>
+        </ul>
       </>
     );
   }
 }
 
-
-Budgets.propTypes = {
- 
-};
+Budgets.propTypes = {};
 
 export default Budgets;
