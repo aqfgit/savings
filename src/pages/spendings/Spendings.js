@@ -4,237 +4,215 @@ import Input from "../../components/Input";
 import Select from "../../components/Select";
 import Button from "../../components/Button";
 import AddCategory from "./AddCategory";
-import { textValueIsValid, numberValueIsValid } from "../../utils/inputValidation";
-import {CategoriesContext} from "../../global-state/CategoriesContext";
+import {
+  textValueIsValid,
+  numberValueIsValid
+} from "../../utils/inputValidation";
+import { CategoriesContext } from "../../global-state/CategoriesContext";
+import { SpendingsContext } from "../../global-state/SpendingsContext";
 
+const initialFieldsState = {
+  fieldsValues: {
+    name: "",
+    category: "",
+    price: 0,
+    quantity: 1
+  },
+  fieldsValid: {
+    name: false,
+    price: false,
+    quantity: true,
+    category: false
+  }
+};
+
+const formValid = ({ fieldsValid, fieldsValues }) => {
+  let valid = true;
+
+  Object.values(fieldsValid).forEach(isValid => {
+    if (!isValid) {
+      valid = false;
+      return;
+    }
+  });
+
+  return valid;
+};
 
 class Spendings extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      nameValue: "",
-      categoryValue: "",
-      priceValue: 0,
-      quantityValue: 1,
-      expenses: [],
-      idCounter: 0,
-      priceInputIsValid: false,
-      quantityInputIsValid: true,
-      nameInputIsValid: false,
-      categoryInputIsValid: false
+      ...initialFieldsState,
     };
 
-    this.handleNameInputChange = this.handleNameInputChange.bind(this);
-    this.handleCategoryInputChange = this.handleCategoryInputChange.bind(this);
-    this.handlePriceInputChange = this.handlePriceInputChange.bind(this);
-    this.handleQuantityInputChange = this.handleQuantityInputChange.bind(this);
-    this.addExpense = this.addExpense.bind(this);
-    
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
-    this.updateStateWithLocalStorage();
-
-    window.addEventListener(
-      "beforeunload",
-      this.saveStateToLocalStorage.bind(this)
-    );
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener(
-      "beforeunload",
-      this.saveStateToLocalStorage.bind(this)
-    );
-
-    this.saveStateToLocalStorage();
-  }
-
-  updateStateWithLocalStorage() {
-    const stateToUpdate = ["expenses", "idCounter"];
-    for (let key of stateToUpdate) {
-      if (localStorage.hasOwnProperty(key)) {
-        let value = localStorage.getItem(key);
-
-        try {
-          value = JSON.parse(value);
-          this.setState({ [key]: value });
-        } catch (e) {
-          this.setState({ [key]: value });
-        }
-      }
+    const categories = this.context.state.categories;
+    if (categories) {
+      console.log(this.context)
+      let fieldsValid = { ...this.state.fieldsValid };
+      let fieldsValues = { ...this.state.fieldsValues };
+      fieldsValues.category = categories[0];
+      fieldsValid.category = true;
+      this.setState({
+        fieldsValid,
+        fieldsValues
+      });
     }
   }
 
-  saveStateToLocalStorage() {
-    const stateToUpdate = ["expenses", "idCounter"];
-    for (let key of stateToUpdate) {
-      localStorage.setItem(key, JSON.stringify(this.state[key]));
+  // componentDidUpdate(prevState) {
+  //   const isCategoriesEmpty = !this.prevState.categories.length;
+  //   if (isCategoriesEmpty) {
+  //       const newCategory = this.changeCategory();
+  //       this.handleCategoryInputChange(newCategory);
+  //     }
+  // }
+
+  //  changeCategory() {
+  //     const categories = this.context.categories.slice();
+  //     let newCategory = null;
+  //     categories.forEach(item => (newCategory = item));
+  //     return newCategory;
+  // }
+
+  
+  handleInputChange(e) {
+    const { name, value } = e.target;
+    let fieldsValid = { ...this.state.fieldsValid };
+    let fieldsValues = { ...this.state.fieldsValues };
+    switch (name) {
+      case "name":
+        fieldsValid.name = value.length > 0;
+        break;
+      case "price":
+        fieldsValid.price = parseInt(value) > 0;
+        break;
+      case "quantity":
+        fieldsValid.quantity = parseInt(value) > 0;
+        break;
+      case "category":
+        fieldsValid.category = value.length > 0;
+        break;
+
+      default:
+        break;
     }
+    fieldsValues[name] = value;
+    this.setState({
+      fieldsValid,
+      fieldsValues
+    });
   }
 
- 
+  handleSubmit(e) {
+    e.preventDefault();
 
-  addExpense(name, category, value, quantity) {
-    if (
-      !this.state.priceInputIsValid ||
-      !this.state.nameInputIsValid ||
-      !this.state.categoryInputIsValid
-    ) {
-      return;
+    if (formValid(this.state)) {
+      this.addExpense(this.state.fieldsValues);
+    } else {
+      console.log("INVALID FORM");
+      this.setState({showErrors: true});
     }
-    const price = parseInt(value);
-    const expenses = this.state.expenses.slice();
-
-    const id = this.state.idCounter;
-    this.setState({
-      id,
-      expenses: expenses.concat({ name, category, price, quantity, id }),
-      idCounter: id + 1,
-      priceValue: "",
-      nameValue: "",
-      quantityValue: 1,
-      priceInputIsValid: false,
-      nameInputIsValid: false,
-      quantityInputIsValid: true
-    });
-    this.props.substractFromBudget(price);
-  }
-
-  deleteExpense(id, cashback) {
-    const expenses = this.state.expenses.slice();
-    const updatedExpenses = expenses.filter(item => item.id !== id);
-    this.setState({
-      expenses: updatedExpenses
-    });
-    this.props.addToBudget(cashback);
-  }
-
-  handleNameInputChange(name) {
-    const isInputValid = textValueIsValid(name);
-    this.setState({
-      nameValue: name,
-      nameInputIsValid: isInputValid
-    });
-  }
-
-  handleCategoryInputChange(name) {
-    const isInputValid = textValueIsValid(name);
-    this.setState({
-      categoryValue: name,
-      categoryInputIsValid: isInputValid
-    });
-  }
-
-  handlePriceInputChange(value) {
-    const isInputValid = numberValueIsValid(value);
-    this.setState({
-      priceValue: value,
-      priceInputIsValid: isInputValid
-    });
-  }
-
-  handleQuantityInputChange(value) {
-    const isInputValid = numberValueIsValid(value);
-    this.setState({
-      quantityValue: value,
-      quantityInputIsValid: isInputValid
-    });
   }
 
   render() {
-    const history = this.state.expenses;
-    const historyList = history.map(item => {
-      return (
-        <tr key={item.id}>
-          <td>{item.name} </td>
-          <td>{item.category} </td>
-          <td>{item.price}$ </td>
-          <td>{item.quantity} </td>
-          <td>
-            <button onClick={() => this.deleteExpense(item.id, item.price)}>
-              Delete
-            </button>
-          </td>
-        </tr>
-      );
-    });
+
+    const {fieldsValid} = this.state;
 
     const priceInputBorder = {
-      border: this.state.priceInputIsValid ? null : "1px solid red"
+      border: fieldsValid.price ? null : "1px solid red"
     };
     const quantityInputBorder = {
-      border: this.state.quantityInputIsValid ? null : "1px solid red"
+      border: fieldsValid.quantity ? null : "1px solid red"
     };
     const categoryInputBorder = {
-      border: this.state.categoryInputIsValid ? null : "1px solid red"
+      border: fieldsValid.category ? null : "1px solid red"
     };
     const nameInputBorder = {
-      border: this.state.nameInputIsValid ? null : "1px solid red"
+      border: fieldsValid.name ? null : "1px solid red"
     };
 
     return (
       <>
         <h2>Spendings</h2>
-        <div>
-          <Input
-            inputValue={this.state.nameValue}
-            onChange={this.handleNameInputChange}
-            label="Name"
-            dataType="text"
-            style={nameInputBorder}
-          />
-        </div>
-        <div>
-          <Select
-            inputValue={this.state.categoryValue}
-            onChange={this.handleCategoryInputChange}
-            label="Category"
-            style={categoryInputBorder}
-          >
-            <CategoriesContext.Consumer>
-              {context => (
-                  context.state.categories.map(item => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))
-              )}
-            </CategoriesContext.Consumer>
-          </Select>
-          <AddCategory/>
-        </div>
-        <div>
-          <Input
-            inputValue={this.state.priceValue}
-            onChange={this.handlePriceInputChange}
-            label="Price"
-            dataType="number"
-            style={priceInputBorder}
-          />
-        </div>
-        <div>
-          <Input
-            inputValue={this.state.quantityValue}
-            onChange={this.handleQuantityInputChange}
-            label="Quantity"
-            dataType="number"
-            style={quantityInputBorder}
-          />
-        </div>
-        <Button
-          onClick={() =>
-            this.addExpense(
-              this.state.nameValue,
-              this.state.categoryValue,
-              this.state.priceValue,
-              this.state.quantityValue
-            )
-          }
-          name="Add an expense"
-        />
+        <SpendingsContext.Consumer>
+          { context =>
+          
+          <form onSubmit={ e => {
+             e.preventDefault();
 
+             if (formValid(this.state)) {
+               context.addExpense(this.state.fieldsValues);
+             } else {
+               console.log("INVALID FORM");
+               this.setState({showErrors: true});
+             }
+            }
+          }
+            noValidate>
+          
+            <div>
+              <input
+                value={this.state.fieldsValues.name}
+                onChange={this.handleInputChange}
+                name="name"
+                type="text"
+                style={nameInputBorder}
+              />
+            </div>
+            <div>
+              <select
+                value={this.state.fieldsValues.category}
+                onChange={this.handleInputChange}
+                onBlur={this.handleInputChange}
+                name="category"
+                style={categoryInputBorder}
+              >
+                <CategoriesContext.Consumer>
+                  {context => 
+                    context.state.categories.map((item, i) => {
+                    return (
+                      <option key={item} value={item}>
+                        {item}
+                      </option>
+                    )})
+                  }
+                </CategoriesContext.Consumer>
+              </select>
+              <AddCategory />
+            </div>
+            <div>
+              <input
+                value={this.state.fieldsValues.price}
+                onChange={this.handleInputChange}
+                name="price"
+                type="number"
+                style={priceInputBorder}
+              />
+            </div>
+            <div>
+              <input
+                value={this.state.fieldsValues.quantity}
+                onChange={this.handleInputChange}
+                name="quantity"
+                type="number"
+                style={quantityInputBorder}
+              />
+            </div>
+            <button
+            type="submit"
+            name="Add an expense"
+            >Add an expense
+            </button>
+          </form>
+        }
+        </SpendingsContext.Consumer>
         <table>
           <thead>
             <tr>
@@ -244,12 +222,32 @@ class Spendings extends React.Component {
               <th>Quantity</th>
             </tr>
           </thead>
-          <tbody>{historyList}</tbody>
+          <tbody>
+          <SpendingsContext.Consumer>
+                {context => 
+                  context.state.expenses.map(item =>  (
+                    <tr key={item.id}>
+                      <td>{item.name} </td>
+                      <td>{item.category} </td>
+                      <td>{item.price}$ </td>
+                      <td>{item.quantity} </td>
+                      <td>
+                        <button onClick={() => context.deleteExpense(item.id, item.price)}>
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                }
+            </SpendingsContext.Consumer>
+          </tbody>
         </table>
       </>
     );
   }
 }
+
+Spendings.contextType = CategoriesContext;
 
 Spendings.propTypes = {
   addToBudget: PropTypes.func.isRequired,

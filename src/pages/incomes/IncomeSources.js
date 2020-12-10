@@ -13,7 +13,7 @@ class IncomeSources extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      incomes: getLocalStorageItem("incomes"),
+      incomes: getLocalStorageItem("incomes") || [],
       inputName: "",
       inputValue: "",
       idCounter: 0,

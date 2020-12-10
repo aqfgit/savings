@@ -5,8 +5,9 @@ import Debts from "../pages/debts/Debts";
 import Budgets from "../pages/budgets/Budgets";
 import PageNotfound from "../pages/404/PageNotFound";
 import { Route, Link, Switch, BrowserRouter as Router } from "react-router-dom";
-import { getLocalStorageItem } from "../utils/localStorage";
+import { getLocalStorageItem, setLocalStorageItem } from "../utils/localStorage";
 import {CategoriesProvider} from "./CategoriesContext";
+import {SpendingsProvider} from "./SpendingsContext";
 
 class BalanceController extends React.Component {
   constructor(props) {
@@ -43,7 +44,10 @@ class BalanceController extends React.Component {
   }
 
   addToBudget(value) {
-    const intValue = parseInt(value);
+    let intValue = parseInt(value);
+    if (Number.isNaN(intValue)) {
+      intValue = 0;
+    }
     this.setState(prevState => ({
       balance: prevState.balance + intValue
     }));
@@ -90,12 +94,14 @@ class BalanceController extends React.Component {
             <Route
               path="/spendings"
               render={() => (
-                <CategoriesProvider>
-                  <Spendings
-                    substractFromBudget={this.substractFromBudget}
-                    addToBudget={this.addToBudget}
-                  />
-                </CategoriesProvider>
+                <SpendingsProvider substractFromBudget={this.substractFromBudget} addToBudget={this.addToBudget}>
+                  <CategoriesProvider>
+                    <Spendings
+                      substractFromBudget={this.substractFromBudget}
+                      addToBudget={this.addToBudget}
+                    />
+                  </CategoriesProvider>
+                </SpendingsProvider>
               )}
             />
             <Route
@@ -107,9 +113,11 @@ class BalanceController extends React.Component {
             <Route
               path="/budgets"
               render={() => (
-                <CategoriesProvider>
-                  <Budgets  />
-                </CategoriesProvider>
+                <SpendingsProvider>
+                  <CategoriesProvider>
+                    <Budgets  />
+                  </CategoriesProvider>
+                </SpendingsProvider>
               )}
             />
             <Route component={PageNotfound} />

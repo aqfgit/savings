@@ -4,6 +4,7 @@ import Input from "../../components/Input";
 import Button from "../../components/Button";
 import { numberValueIsValid } from "../../utils/inputValidation";
 import {CategoriesContext} from "../../global-state/CategoriesContext";
+import {SpendingsContext} from "../../global-state/SpendingsContext";
 
 class Budgets extends React.Component {
   constructor(props) {
@@ -41,11 +42,27 @@ class Budgets extends React.Component {
     return (
       <>
       <h2>Budgets</h2>
-      <CategoriesContext.Consumer>
-          {context => (
-              <span>{context.state.categories}</span>
-          )}
-      </CategoriesContext.Consumer>
+      <ul>
+      <SpendingsContext.Consumer>
+        {spendingsContext => (
+
+        <CategoriesContext.Consumer>
+            {categoriesContext => (
+
+                categoriesContext.state.categories.map(item => (
+                  <li key={item}>
+                    {item}
+                    {spendingsContext.state.expenses.map(element => (
+                      <div>{element.name}</div>
+                    ))}
+                  </li>
+                ))
+            )}
+        </CategoriesContext.Consumer>
+        )}
+      </SpendingsContext.Consumer>
+      </ul>
+
       </>
     );
   }

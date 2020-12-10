@@ -26,9 +26,7 @@ class Balance extends React.Component {
   }
 
   handleAddToBudget() {
-    if (!this.state.balanceInputIsValid) {
-      return;
-    }
+    
     this.props.addToBudget(this.state.balanceInputValue);
     this.setState({
       balanceInputValue: "",

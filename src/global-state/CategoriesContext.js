@@ -1,4 +1,5 @@
 import React from 'react';
+import { setLocalStorageItem } from '../utils/localStorage';
 
 
 const CategoriesContext = React.createContext();
@@ -12,11 +13,12 @@ class CategoriesProvider extends React.Component {
 
         this.addCategory = this.addCategory.bind(this);
         this.removeCategory = this.removeCategory.bind(this);
+        this.isNameDuplicate = this.isNameDuplicate.bind(this);
     }
 
-    componentDidMount() {
+    
+    componentWillMount() {
       this.updateStateWithLocalStorage();
-  
       window.addEventListener(
         "beforeunload",
         this.saveStateToLocalStorage.bind(this)
@@ -42,34 +44,31 @@ class CategoriesProvider extends React.Component {
             value = JSON.parse(value);
             this.setState({ [key]: value });
           } catch (e) {
-            this.setState({ [key]: value });
+            console.log(e)
           }
         }
       }
     }
   
     saveStateToLocalStorage() {
+      console.log(1)
+
       const stateToUpdate = ["categories"];
       for (let key of stateToUpdate) {
+      console.log(key, JSON.stringify(this.state[key]))
         localStorage.setItem(key, JSON.stringify(this.state[key]));
       }
     }
 
     addCategory(name) {
-      // const isCategoriesEmpty = !this.state.categories.length;
       this.setState(
-        prevState => ({
+        prevState => {
+        return ({
           categories: prevState.categories.concat(name),
           addCategory: this.addCategory,
           removeCategory: this.removeCategory,
-        }),
-        // () => {
-        //   if (isCategoriesEmpty) {
-        //     const newCategory = this.changeCategory();
-        //     this.handleCategoryInputChange(newCategory);
-        //   }
-        // }
-      );
+        })},
+        );
     }
 
      
@@ -88,18 +87,26 @@ class CategoriesProvider extends React.Component {
     );
   }
 
-  // changeCategory() {
-  //   const categories = this.state.categories.slice();
-  //   let newCategory = null;
-  //   categories.forEach(item => (newCategory = item));
-  //   return newCategory;
-  // }
+  isNameDuplicate(name) {
+    let isDuplicate = false;
+    this.state.categories.forEach(item => {
+      if (item === name) {
+        isDuplicate = true;
+        return;
+      }
+    });
+
+    return isDuplicate;
+  }
+
+ 
     
     render() {
        return <CategoriesContext.Provider value={{
          state: this.state,
          addCategory: this.addCategory,
          removeCategory: this.removeCategory,
+         isNameDuplicate: this.isNameDuplicate,
        }}>
          {this.props.children}
        </CategoriesContext.Provider>

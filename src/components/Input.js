@@ -21,6 +21,7 @@ class Input extends React.Component {
           value={this.props.inputValue}
           onChange={this.handleChange}
           style={{ border }}
+          required="required"
         />
         <label>{this.props.label}</label>
       </>
