@@ -52,9 +52,12 @@ class Budgets extends React.Component {
                 categoriesContext.state.categories.map(item => (
                   <li key={item}>
                     {item}
-                    {spendingsContext.state.expenses.map(element => (
-                      <div>{element.name}</div>
-                    ))}
+                    {<div>{spendingsContext.state.expenses.reduce((sum, n) => {
+                      if (n.category === item) {
+                        return sum += (parseInt(n.price) * parseInt(n.quantity))
+                      }
+                      return sum += 0;
+            }       ,0)}</div>}
                   </li>
                 ))
             )}

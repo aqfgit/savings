@@ -232,7 +232,7 @@ class Spendings extends React.Component {
                       <td>{item.price}$ </td>
                       <td>{item.quantity} </td>
                       <td>
-                        <button onClick={() => context.deleteExpense(item.id, item.price)}>
+                        <button onClick={() => context.deleteExpense(item.id, item.price, item.quantity)}>
                           Delete
                         </button>
                       </td>

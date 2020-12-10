@@ -67,16 +67,16 @@ class SpendingsProvider extends React.Component {
           expenses: expenses.concat({ name, category, price, quantity, id }),
           idCounter: id + 1,
         });
-        this.props.substractFromBudget(price);
+        this.props.substractFromBudget(price*quantity);
       }
     
-      deleteExpense(id, cashback) {
+      deleteExpense(id, cashback, quantity) {
         const expenses = this.state.expenses.slice();
         const updatedExpenses = expenses.filter(item => item.id !== id);
         this.setState({
           expenses: updatedExpenses
         });
-        this.props.addToBudget(cashback);
+        this.props.addToBudget(cashback * quantity);
       }
     
     
