@@ -76,10 +76,10 @@ class AddCategory extends React.Component {
                 <CategoriesContext.Consumer>
                   {(context) =>
                     context.state.categories.map((item) => (
-                      <li key={item + "id"}>
-                        {item}{" "}
+                      <li key={item.name + "id"}>
+                        {item.name}{" "}
                         <Button
-                          onClick={() => context.removeCategory(item)}
+                          onClick={() => context.removeCategory(item.name)}
                           name="delete"
                         />
                       </li>

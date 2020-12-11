@@ -58,7 +58,7 @@ class SpendingsProvider extends React.Component {
 
   addExpense({ name, category, account, price, quantity }) {
     const expenses = this.state.expenses.slice();
-    console.log(account);
+    console.log(category);
     const id = this.state.idCounter;
     this.setState({
       id,

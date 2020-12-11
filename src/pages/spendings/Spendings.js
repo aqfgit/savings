@@ -44,7 +44,6 @@ class Spendings extends React.Component {
     this.state = {
       ...initialFieldsState,
     };
-
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -56,10 +55,16 @@ class Spendings extends React.Component {
     let fieldsValid = { ...this.state.fieldsValid };
     let fieldsValues = { ...this.state.fieldsValues };
 
-    fieldsValues.category = categories[0];
-    fieldsValid.category = true;
-    fieldsValues.account = accounts[0].name;
-    fieldsValid.account = true;
+    if (categories.length) {
+      fieldsValues.category = categories[0].name;
+      console.log(categories[0].name);
+
+      fieldsValid.category = true;
+    }
+    if (accounts.length) {
+      fieldsValues.account = accounts[0].name;
+      fieldsValid.account = true;
+    }
 
     this.setState({
       fieldsValid,
@@ -111,6 +116,7 @@ class Spendings extends React.Component {
 
   render() {
     const { fieldsValid } = this.state;
+    console.log(this.state.fieldsValues.category);
 
     const priceInputBorder = {
       border: fieldsValid.price ? null : "1px solid red",
@@ -134,86 +140,95 @@ class Spendings extends React.Component {
         <AddCategory />
         <SpendingsContext.Consumer>
           {(context) => (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
+            <CategoriesContext.Consumer>
+              {(categoriesContext) => (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
 
-                if (formValid(this.state)) {
-                  context.addExpense(this.state.fieldsValues);
-                } else {
-                  console.log("INVALID FORM");
-                  this.setState({ showErrors: true });
-                }
-              }}
-              noValidate
-            >
-              <div>
-                <input
-                  value={this.state.fieldsValues.name}
-                  onChange={this.handleInputChange}
-                  name="name"
-                  type="text"
-                  style={nameInputBorder}
-                />
-              </div>
-              <div>
-                <select
-                  value={this.state.fieldsValues.category}
-                  onChange={this.handleInputChange}
-                  onBlur={this.handleInputChange}
-                  name="category"
-                  style={categoryInputBorder}
-                >
-                  <CategoriesContext.Consumer>
-                    {(context) =>
-                      context.state.categories.map((item) => {
-                        return (
-                          <option key={item} value={item}>
-                            {item}
-                          </option>
-                        );
-                      })
+                    if (formValid(this.state)) {
+                      context.addExpense(this.state.fieldsValues);
+                      console.log(this.state.fieldsValues.category);
+                      categoriesContext.addToCategorySpent(
+                        this.state.fieldsValues.category,
+                        this.state.fieldsValues.price
+                      );
+                    } else {
+                      console.log("INVALID FORM");
+                      this.setState({ showErrors: true });
                     }
-                  </CategoriesContext.Consumer>
-                </select>
-              </div>
-              <div>
-                <select
-                  value={this.state.fieldsValues.account}
-                  onChange={this.handleInputChange}
-                  onBlur={this.handleInputChange}
-                  style={accountsInputBorder}
-                  name="account"
+                  }}
+                  noValidate
                 >
-                  {this.props.accounts.map((account) => (
-                    <option key={account.name} value={account.name}>
-                      {account.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <input
-                  value={this.state.fieldsValues.price}
-                  onChange={this.handleInputChange}
-                  name="price"
-                  type="number"
-                  style={priceInputBorder}
-                />
-              </div>
-              <div>
-                <input
-                  value={this.state.fieldsValues.quantity}
-                  onChange={this.handleInputChange}
-                  name="quantity"
-                  type="number"
-                  style={quantityInputBorder}
-                />
-              </div>
-              <button type="submit" name="Add an expense">
-                Add an expense
-              </button>
-            </form>
+                  <div>
+                    <input
+                      value={this.state.fieldsValues.name}
+                      onChange={this.handleInputChange}
+                      name="name"
+                      type="text"
+                      style={nameInputBorder}
+                    />
+                  </div>
+                  <div>
+                    <select
+                      value={this.state.fieldsValues.category}
+                      onChange={this.handleInputChange}
+                      onBlur={this.handleInputChange}
+                      name="category"
+                      style={categoryInputBorder}
+                    >
+                      <CategoriesContext.Consumer>
+                        {(context) =>
+                          context.state.categories.map((item) => {
+                            return (
+                              <option key={item.name} value={item.name}>
+                                {item.name}
+                              </option>
+                            );
+                          })
+                        }
+                      </CategoriesContext.Consumer>
+                    </select>
+                  </div>
+                  <div>
+                    <select
+                      value={this.state.fieldsValues.account}
+                      onChange={this.handleInputChange}
+                      onBlur={this.handleInputChange}
+                      style={accountsInputBorder}
+                      name="account"
+                    >
+                      {this.props.accounts.map((account) => (
+                        <option key={account.name} value={account.name}>
+                          {account.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <input
+                      value={this.state.fieldsValues.price}
+                      onChange={this.handleInputChange}
+                      name="price"
+                      type="number"
+                      style={priceInputBorder}
+                    />
+                  </div>
+                  <div>
+                    <input
+                      value={this.state.fieldsValues.quantity}
+                      onChange={this.handleInputChange}
+                      name="quantity"
+                      type="number"
+                      style={quantityInputBorder}
+                    />
+                  </div>
+                  <button type="submit" name="Add an expense">
+                    Add an expense
+                  </button>
+                </form>
+              )}
+            </CategoriesContext.Consumer>
           )}
         </SpendingsContext.Consumer>
         <table>
@@ -227,30 +242,39 @@ class Spendings extends React.Component {
           </thead>
           <tbody>
             <SpendingsContext.Consumer>
-              {(context) =>
-                context.state.expenses.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.name} </td>
-                    <td>{item.category} </td>
-                    <td>{item.price}$ </td>
-                    <td>{item.quantity} </td>
-                    <td>
-                      <button
-                        onClick={() =>
-                          context.deleteExpense(
-                            item.id,
-                            item.price,
-                            item.quantity,
-                            item.account
-                          )
-                        }
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              }
+              {(context) => (
+                <CategoriesContext.Consumer>
+                  {(categoriesContext) =>
+                    context.state.expenses.map((item) => (
+                      <tr key={item.id}>
+                        <td>{item.name} </td>
+                        <td>{item.category} </td>
+                        {console.log(item.category)}
+                        <td>{item.price} </td>
+                        <td>{item.quantity} </td>
+                        <td>
+                          <button
+                            onClick={() => {
+                              context.deleteExpense(
+                                item.id,
+                                item.price,
+                                item.quantity,
+                                item.account
+                              );
+                              categoriesContext.addToCategorySpent(
+                                item.category,
+                                -item.price
+                              );
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  }
+                </CategoriesContext.Consumer>
+              )}
             </SpendingsContext.Consumer>
           </tbody>
         </table>

@@ -1,7 +1,7 @@
 import React from "react";
 import { numberValueIsValid } from "../../utils/inputValidation";
 import { CategoriesContext } from "../../global-state/CategoriesContext";
-import { SpendingsContext } from "../../global-state/SpendingsContext";
+import BudgetCategory from "./BudgetCategory";
 
 class Budgets extends React.Component {
   constructor(props) {
@@ -39,31 +39,19 @@ class Budgets extends React.Component {
     return (
       <>
         <h2>Budgets</h2>
+
         <ul>
-          <SpendingsContext.Consumer>
-            {(spendingsContext) => (
-              <CategoriesContext.Consumer>
-                {(categoriesContext) =>
-                  categoriesContext.state.categories.map((item) => (
-                    <li key={item}>
-                      {item}
-                      {
-                        <div>
-                          {spendingsContext.state.expenses.reduce((sum, n) => {
-                            if (n.category === item) {
-                              return (sum +=
-                                parseInt(n.price) * parseInt(n.quantity));
-                            }
-                            return (sum += 0);
-                          }, 0)}
-                        </div>
-                      }
-                    </li>
-                  ))
-                }
-              </CategoriesContext.Consumer>
-            )}
-          </SpendingsContext.Consumer>
+          <CategoriesContext.Consumer>
+            {(categoriesContext) =>
+              categoriesContext.state.categories.map((item) => (
+                <BudgetCategory
+                  key={item.name}
+                  category={item}
+                  changeCategoryLimit={categoriesContext.changeCategoryLimit}
+                />
+              ))
+            }
+          </CategoriesContext.Consumer>
         </ul>
       </>
     );
