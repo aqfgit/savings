@@ -19,13 +19,16 @@ class IncomeSources extends React.Component {
       incomes: getLocalStorageItem("incomes") || [],
       inputName: "",
       inputValue: "",
+      inputAccounts: "",
       idCounter: 0,
       valueInputIsValid: false,
       nameInputIsValid: false,
+      accountInputIsValid: false,
     };
 
     this.handleValueInputChange = this.handleValueInputChange.bind(this);
     this.handleNameInputChange = this.handleNameInputChange.bind(this);
+    this.handleAccountsInputChange = this.handleAccountsInputChange.bind(this);
     this.addIncome = this.addIncome.bind(this);
   }
 
@@ -36,16 +39,24 @@ class IncomeSources extends React.Component {
       this.saveStateToLocalStorage.bind(this)
     );
 
+    const accounts = this.props.accounts;
+    if (accounts) {
+      this.setState({
+        inputAccounts: accounts[0].name,
+        accountInputIsValid: true,
+      });
+    }
+
     const lastTime = getDateFromLocalStorage("lastIncomeUpadte") || new Date();
     const timeDiff = Math.round((new Date() - lastTime) / 1000) || 1;
 
     this.state.incomes.forEach((item) => {
-      this.props.addToBudget(timeDiff * item.value);
+      this.props.addToBudget(timeDiff * item.value, item.account || "wallet");
 
       const incomes = this.state.incomes.slice();
       const currentIncome = incomes.find((income) => income.name === item.name);
       const interval = setInterval(() => {
-        this.props.addToBudget(item.value);
+        this.props.addToBudget(item.value, item.account || "wallet");
         addDateToLocalStorage("lastIncomeUpadte", new Date());
       }, item.frequency);
 
@@ -109,15 +120,30 @@ class IncomeSources extends React.Component {
     });
   }
 
+  handleAccountsInputChange(e) {
+    const isInputValid = textValueIsValid(e.target.value);
+    this.setState({
+      inputAccounts: e.target.value,
+      accountInputIsValid: isInputValid,
+    });
+  }
+
   addIncome() {
+    console.log("???????");
+
     const value = this.state.inputValue;
     const intValue = parseInt(value);
 
-    if (!this.state.valueInputIsValid || !this.state.nameInputIsValid) {
+    if (
+      !this.state.valueInputIsValid ||
+      !this.state.nameInputIsValid ||
+      !this.state.accountInputIsValid
+    ) {
       return;
     }
+    const account = this.state.inputAccounts;
     const interval = setInterval(() => {
-      this.props.addToBudget(value);
+      this.props.addToBudget(value, account);
       addDateToLocalStorage("lastIncomeUpadte", new Date());
     }, 1000);
 
@@ -127,6 +153,7 @@ class IncomeSources extends React.Component {
       incomes: prevState.incomes.concat({
         id,
         name: this.state.inputName,
+        account: this.state.inputAccount,
         value: intValue,
         frequency: 1000,
         timeUnit: "second",
@@ -194,6 +221,17 @@ class IncomeSources extends React.Component {
           dataType="number"
           style={valueInputBorder}
         />
+        <select
+          value={this.state.inputAccounts}
+          onChange={this.handleAccountsInputChange}
+          onBlur={this.handleAccountsInputChange}
+        >
+          {this.props.accounts.map((account) => (
+            <option key={account.name} value={account.name}>
+              {account.name}
+            </option>
+          ))}
+        </select>
         <Button onClick={this.addIncome} name="Add income" />
         <table>
           <thead>

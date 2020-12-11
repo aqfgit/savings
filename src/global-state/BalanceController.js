@@ -5,23 +5,30 @@ import Debts from "../pages/debts/Debts";
 import Budgets from "../pages/budgets/Budgets";
 import PageNotfound from "../pages/404/PageNotFound";
 import { Route, Link, Switch, BrowserRouter as Router } from "react-router-dom";
-import { getLocalStorageItem } from "../utils/localStorage";
 import { CategoriesProvider } from "./CategoriesContext";
 import { SpendingsProvider } from "./SpendingsContext";
 
 class BalanceController extends React.Component {
   constructor(props) {
     super(props);
-
+    /*[
+      { name: "wallet", balance: 0 },
+      { name: "card", balance: 0 },
+    ],*/
     this.state = {
-      balance: getLocalStorageItem("balance") || 0,
+      balance: 0,
+      accounts: [],
     };
 
     this.addToBudget = this.addToBudget.bind(this);
     this.substractFromBudget = this.substractFromBudget.bind(this);
+    this.addAccount = this.addAccount.bind(this);
+    this.removeAccount = this.removeAccount.bind(this);
+    this.isNameDuplicate = this.isNameDuplicate.bind(this);
   }
 
-  componentDidMount() {
+  componentWillMount() {
+    this.updateStateWithLocalStorage();
     window.addEventListener(
       "beforeunload",
       this.saveStateToLocalStorage.bind(this)
@@ -37,25 +44,94 @@ class BalanceController extends React.Component {
     this.saveStateToLocalStorage();
   }
 
+  updateStateWithLocalStorage() {
+    const stateToUpdate = ["balance", "accounts"];
+    for (let key of stateToUpdate) {
+      if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
+        let value = localStorage.getItem(key);
+
+        try {
+          value = JSON.parse(value);
+          this.setState({ [key]: value });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+  }
+
   saveStateToLocalStorage() {
-    for (let key in this.state) {
+    const stateToUpdate = ["balance", "accounts"];
+    for (let key of stateToUpdate) {
+      console.log(this.state.balance);
+      console.log(key);
+
       localStorage.setItem(key, JSON.stringify(this.state[key]));
     }
   }
 
-  addToBudget(value) {
+  addAccount(name) {
+    const newAccount = { name, balance: 0 };
+    this.setState((prevState) => {
+      return {
+        accounts: prevState.accounts.concat(newAccount),
+      };
+    });
+  }
+
+  removeAccount(name) {
+    const accounts = this.state.accounts.slice();
+    const updatedAccounts = accounts.filter((acc) => acc.name !== name);
+    this.setState(
+      () => ({
+        accounts: updatedAccounts,
+      })
+      // () => {
+      //   const newCategory = this.changeCategory() || "";
+      //   this.handleCategoryInputChange(newCategory);
+      // }
+    );
+  }
+
+  isNameDuplicate(name) {
+    let isDuplicate = false;
+    this.state.accounts.forEach((item) => {
+      if (item.name === name) {
+        isDuplicate = true;
+        return;
+      }
+    });
+
+    return isDuplicate;
+  }
+
+  addToBudget(value, account) {
     let intValue = parseInt(value);
     if (Number.isNaN(intValue)) {
       intValue = 0;
     }
+    const accounts = this.state.accounts.map((item) => {
+      if (item.name.toLowerCase() === account.toLowerCase()) {
+        return { name: item.name, balance: item.balance + intValue };
+      }
+      return item;
+    });
     this.setState((prevState) => ({
       balance: prevState.balance + intValue,
+      accounts,
     }));
   }
 
-  substractFromBudget(price) {
+  substractFromBudget(price, account) {
+    const accounts = this.state.accounts.map((item) => {
+      if (item.name === account) {
+        return { name: item.name, balance: item.balance - price };
+      }
+      return item;
+    });
     this.setState((prevState) => ({
       balance: prevState.balance - price,
+      accounts,
     }));
   }
 
@@ -88,6 +164,10 @@ class BalanceController extends React.Component {
                 <Incomes
                   addToBudget={this.addToBudget}
                   balance={this.state.balance}
+                  accounts={this.state.accounts}
+                  addAccount={this.addAccount}
+                  removeAccount={this.removeAccount}
+                  isNameDuplicate={this.isNameDuplicate}
                 />
               )}
             />

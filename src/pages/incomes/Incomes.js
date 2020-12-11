@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import IncomeSources from "./IncomeSources";
 import { numberValueIsValid } from "../../utils/inputValidation";
 import Balance from "./Balance";
+import AddAccount from "./AddAccount";
 
 class Incomes extends React.Component {
   constructor(props) {
@@ -43,8 +44,18 @@ class Incomes extends React.Component {
         <Balance
           addToBudget={this.props.addToBudget}
           balance={this.props.balance}
+          accounts={this.props.accounts}
         />
-        <IncomeSources addToBudget={this.props.addToBudget} />
+        <IncomeSources
+          addToBudget={this.props.addToBudget}
+          accounts={this.props.accounts}
+        />
+        <AddAccount
+          accounts={this.props.accounts}
+          addAccount={this.props.addAccount}
+          removeAccount={this.props.removeAccount}
+          isNameDuplicate={this.props.isNameDuplicate}
+        />
       </>
     );
   }

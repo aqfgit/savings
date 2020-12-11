@@ -119,6 +119,7 @@ class Spendings extends React.Component {
     return (
       <>
         <h2>Spendings</h2>
+        <AddCategory />
         <SpendingsContext.Consumer>
           {(context) => (
             <form
@@ -163,7 +164,6 @@ class Spendings extends React.Component {
                     }
                   </CategoriesContext.Consumer>
                 </select>
-                <AddCategory />
               </div>
               <div>
                 <input
