@@ -191,7 +191,10 @@ class BalanceController extends React.Component {
             <Route
               path="/debts"
               render={() => (
-                <Debts substractFromBudget={this.substractFromBudget} />
+                <Debts
+                  substractFromBudget={this.substractFromBudget}
+                  accounts={this.state.accounts}
+                />
               )}
             />
             <Route

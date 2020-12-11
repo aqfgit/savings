@@ -10,7 +10,7 @@ class DebtItem extends React.Component {
 
     this.state = {
       inputValue: "",
-      valueInputIsValid: false
+      valueInputIsValid: false,
     };
 
     this.handleValueInputChange = this.handleValueInputChange.bind(this);
@@ -21,7 +21,7 @@ class DebtItem extends React.Component {
     const isInputValid = numberValueIsValid(value);
     this.setState({
       inputValue: value,
-      valueInputIsValid: isInputValid
+      valueInputIsValid: isInputValid,
     });
   }
 
@@ -41,7 +41,7 @@ class DebtItem extends React.Component {
 
   render() {
     const valueInputBorder = {
-      border: this.state.valueInputIsValid ? null : "1px solid red"
+      border: this.state.valueInputIsValid ? null : "1px solid red",
     };
 
     const moneyPaid = !this.isDebtPaid(this.props.moneyPaid)
@@ -65,6 +65,7 @@ class DebtItem extends React.Component {
                 style={valueInputBorder}
               />
             </td>
+
             <td>
               <Button onClick={this.handlePayDebt} name="Pay" />
             </td>
@@ -87,7 +88,7 @@ DebtItem.propTypes = {
   initialMoney: PropTypes.number.isRequired,
   moneyPaid: PropTypes.number.isRequired,
   payDebt: PropTypes.func.isRequired,
-  deleteDebt: PropTypes.func.isRequired
+  deleteDebt: PropTypes.func.isRequired,
 };
 
 export default DebtItem;

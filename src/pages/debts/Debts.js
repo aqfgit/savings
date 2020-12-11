@@ -16,13 +16,16 @@ class Debts extends React.Component {
       debts: [],
       inputName: "",
       inputValue: "",
+      inputAccount: "",
       idCounter: 0,
       valueInputIsValid: false,
       nameInputIsValid: false,
+      accountInputIsValid: false,
     };
 
     this.handleValueInputChange = this.handleValueInputChange.bind(this);
     this.handleNameInputChange = this.handleNameInputChange.bind(this);
+    this.handleAccountInputChange = this.handleAccountInputChange.bind(this);
 
     this.addDebt = this.addDebt.bind(this);
     this.deleteDebt = this.deleteDebt.bind(this);
@@ -31,6 +34,15 @@ class Debts extends React.Component {
 
   componentDidMount() {
     this.updateStateWithLocalStorage();
+
+    const accounts = this.props.accounts;
+    if (accounts) {
+      this.setState({
+        inputAccount: accounts[0].name,
+        accountInputIsValid: true,
+      });
+    }
+
     window.addEventListener(
       "beforeunload",
       this.saveStateToLocalStorage.bind(this)
@@ -85,6 +97,14 @@ class Debts extends React.Component {
     });
   }
 
+  handleAccountInputChange(e) {
+    const isInputValid = textValueIsValid(e.target.value);
+    this.setState({
+      inputAccount: e.target.value,
+      accountInputIsValid: isInputValid,
+    });
+  }
+
   addDebt() {
     const value = this.state.inputValue;
     const intValue = parseInt(value);
@@ -126,7 +146,7 @@ class Debts extends React.Component {
     const newMoneyPaid = debts[index].moneyPaid;
     const initialMoney = debts[index].initialMoney;
     const rest = newMoneyPaid <= initialMoney ? 0 : newMoneyPaid - initialMoney;
-    this.props.substractFromBudget(money - rest);
+    this.props.substractFromBudget(money - rest, this.state.inputAccount);
 
     this.setState({
       debts,
@@ -173,6 +193,20 @@ class Debts extends React.Component {
           dataType="number"
           style={valueInputBorder}
         />
+        <div>
+          <select
+            value={this.state.inputAccount}
+            onChange={this.handleAccountInputChange}
+            onBlur={this.handleAccountInputChange}
+            name="account"
+          >
+            {this.props.accounts.map((account) => (
+              <option key={account.name} value={account.name}>
+                {account.name}
+              </option>
+            ))}
+          </select>
+        </div>
         <Button onClick={this.addDebt} name="Add debt" />
         <table>
           <thead>
