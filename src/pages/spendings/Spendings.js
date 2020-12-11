@@ -11,6 +11,7 @@ const initialFieldsState = {
   fieldsValues: {
     name: "",
     category: "",
+    account: "",
     price: 0,
     quantity: 1,
   },
@@ -19,6 +20,7 @@ const initialFieldsState = {
     price: false,
     quantity: true,
     category: false,
+    account: false,
   },
 };
 
@@ -49,16 +51,20 @@ class Spendings extends React.Component {
 
   componentDidMount() {
     const categories = this.context.state.categories;
-    if (categories) {
-      let fieldsValid = { ...this.state.fieldsValid };
-      let fieldsValues = { ...this.state.fieldsValues };
-      fieldsValues.category = categories[0];
-      fieldsValid.category = true;
-      this.setState({
-        fieldsValid,
-        fieldsValues,
-      });
-    }
+    const accounts = this.props.accounts;
+
+    let fieldsValid = { ...this.state.fieldsValid };
+    let fieldsValues = { ...this.state.fieldsValues };
+
+    fieldsValues.category = categories[0];
+    fieldsValid.category = true;
+    fieldsValues.account = accounts[0].name;
+    fieldsValid.account = true;
+
+    this.setState({
+      fieldsValid,
+      fieldsValues,
+    });
   }
 
   handleInputChange(e) {
@@ -77,6 +83,9 @@ class Spendings extends React.Component {
         break;
       case "category":
         fieldsValid.category = value.length > 0;
+        break;
+      case "account":
+        fieldsValid.account = value.length > 0;
         break;
 
       default:
@@ -111,6 +120,9 @@ class Spendings extends React.Component {
     };
     const categoryInputBorder = {
       border: fieldsValid.category ? null : "1px solid red",
+    };
+    const accountsInputBorder = {
+      border: fieldsValid.account ? null : "1px solid red",
     };
     const nameInputBorder = {
       border: fieldsValid.name ? null : "1px solid red",
@@ -166,6 +178,21 @@ class Spendings extends React.Component {
                 </select>
               </div>
               <div>
+                <select
+                  value={this.state.fieldsValues.account}
+                  onChange={this.handleInputChange}
+                  onBlur={this.handleInputChange}
+                  style={accountsInputBorder}
+                  name="account"
+                >
+                  {this.props.accounts.map((account) => (
+                    <option key={account.name} value={account.name}>
+                      {account.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
                 <input
                   value={this.state.fieldsValues.price}
                   onChange={this.handleInputChange}
@@ -213,7 +240,8 @@ class Spendings extends React.Component {
                           context.deleteExpense(
                             item.id,
                             item.price,
-                            item.quantity
+                            item.quantity,
+                            item.account
                           )
                         }
                       >

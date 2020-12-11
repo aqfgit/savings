@@ -56,25 +56,32 @@ class SpendingsProvider extends React.Component {
     }
   }
 
-  addExpense({ name, category, price, quantity }) {
+  addExpense({ name, category, account, price, quantity }) {
     const expenses = this.state.expenses.slice();
-
+    console.log(account);
     const id = this.state.idCounter;
     this.setState({
       id,
-      expenses: expenses.concat({ name, category, price, quantity, id }),
+      expenses: expenses.concat({
+        name,
+        category,
+        account,
+        price,
+        quantity,
+        id,
+      }),
       idCounter: id + 1,
     });
-    this.props.substractFromBudget(price * quantity);
+    this.props.substractFromBudget(price * quantity, account);
   }
 
-  deleteExpense(id, cashback, quantity) {
+  deleteExpense(id, cashback, quantity, account) {
     const expenses = this.state.expenses.slice();
     const updatedExpenses = expenses.filter((item) => item.id !== id);
     this.setState({
       expenses: updatedExpenses,
     });
-    this.props.addToBudget(cashback * quantity);
+    this.props.addToBudget(cashback * quantity, account);
   }
 
   render() {

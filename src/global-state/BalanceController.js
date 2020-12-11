@@ -181,6 +181,7 @@ class BalanceController extends React.Component {
                   <CategoriesProvider>
                     <Spendings
                       substractFromBudget={this.substractFromBudget}
+                      accounts={this.state.accounts}
                       addToBudget={this.addToBudget}
                     />
                   </CategoriesProvider>

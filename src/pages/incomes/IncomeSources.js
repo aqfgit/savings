@@ -51,12 +51,12 @@ class IncomeSources extends React.Component {
     const timeDiff = Math.round((new Date() - lastTime) / 1000) || 1;
 
     this.state.incomes.forEach((item) => {
-      this.props.addToBudget(timeDiff * item.value, item.account || "wallet");
+      this.props.addToBudget(timeDiff * item.value, item.account);
 
       const incomes = this.state.incomes.slice();
       const currentIncome = incomes.find((income) => income.name === item.name);
       const interval = setInterval(() => {
-        this.props.addToBudget(item.value, item.account || "wallet");
+        this.props.addToBudget(item.value, item.account);
         addDateToLocalStorage("lastIncomeUpadte", new Date());
       }, item.frequency);
 
@@ -129,8 +129,6 @@ class IncomeSources extends React.Component {
   }
 
   addIncome() {
-    console.log("???????");
-
     const value = this.state.inputValue;
     const intValue = parseInt(value);
 
