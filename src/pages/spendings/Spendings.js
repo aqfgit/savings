@@ -6,6 +6,7 @@ import AddCategory from "./AddCategory";
 
 import { CategoriesContext } from "../../global-state/CategoriesContext";
 import { SpendingsContext } from "../../global-state/SpendingsContext";
+import SpendingsByDate from "./SpendingsByDate";
 
 const initialFieldsState = {
   fieldsValues: {
@@ -232,163 +233,66 @@ class Spendings extends React.Component {
           )}
         </SpendingsContext.Consumer>
         <h2>Todays ({new Date().toLocaleDateString()}) spendings: </h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Price</th>
-              <th>Quantity</th>
-            </tr>
-          </thead>
-          <tbody>
-            <SpendingsContext.Consumer>
-              {(context) => (
-                <CategoriesContext.Consumer>
-                  {(categoriesContext) =>
-                    context.state.expenses
-                      .filter((item) => {
-                        return (
-                          new Date(item.date).getUTCDate() ===
-                          new Date().getUTCDate()
-                        );
-                      })
-                      .map((item) => (
-                        <tr key={item.id}>
-                          <td>{item.name} </td>
-                          <td>{item.category} </td>
-                          {console.log(item.category)}
-                          <td>{item.price} </td>
-                          <td>{item.quantity} </td>
-                          {console.log(typeof item.date.__proto__)}
-                          <td>
-                            <button
-                              onClick={() => {
-                                context.deleteExpense(
-                                  item.id,
-                                  item.price,
-                                  item.quantity,
-                                  item.account
-                                );
-                                categoriesContext.addToCategorySpent(
-                                  item.category,
-                                  -item.price
-                                );
-                              }}
-                            >
-                              Delete
-                            </button>
-                          </td>
-                          {}
-                        </tr>
-                      ))
-                  }
-                </CategoriesContext.Consumer>
+        <SpendingsContext.Consumer>
+          {(spendingsContext) => (
+            <CategoriesContext.Consumer>
+              {(categoriesContext) => (
+                <SpendingsByDate
+                  expenses={spendingsContext.state.expenses}
+                  deleteExpense={spendingsContext.deleteExpense}
+                  addToCategorySpent={categoriesContext.addToCategorySpent}
+                  dateCondition={(item) => {
+                    return (
+                      new Date(item.date).getUTCDate() ===
+                      new Date().getUTCDate()
+                    );
+                  }}
+                />
               )}
-            </SpendingsContext.Consumer>
-          </tbody>
-        </table>
+            </CategoriesContext.Consumer>
+          )}
+        </SpendingsContext.Consumer>
         <h2>This months spendings</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Price</th>
-              <th>Quantity</th>
-            </tr>
-          </thead>
-          <tbody>
-            <SpendingsContext.Consumer>
-              {(context) => (
-                <CategoriesContext.Consumer>
-                  {(categoriesContext) =>
-                    context.state.expenses
-                      .filter((item) => {
-                        return (
-                          new Date(item.date).getUTCMonth() ===
-                          new Date().getUTCMonth()
-                        );
-                      })
-                      .map((item) => (
-                        <tr key={item.id}>
-                          <td>{item.name} </td>
-                          <td>{item.category} </td>
-                          <td>{item.price} </td>
-                          <td>{item.quantity} </td>
-                          <td>
-                            <button
-                              onClick={() => {
-                                context.deleteExpense(
-                                  item.id,
-                                  item.price,
-                                  item.quantity,
-                                  item.account
-                                );
-                                categoriesContext.addToCategorySpent(
-                                  item.category,
-                                  -item.price
-                                );
-                              }}
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                  }
-                </CategoriesContext.Consumer>
+        <SpendingsContext.Consumer>
+          {(spendingsContext) => (
+            <CategoriesContext.Consumer>
+              {(categoriesContext) => (
+                <SpendingsByDate
+                  expenses={spendingsContext.state.expenses}
+                  deleteExpense={spendingsContext.deleteExpense}
+                  addToCategorySpent={categoriesContext.addToCategorySpent}
+                  dateCondition={(item) => {
+                    return (
+                      new Date(item.date).getUTCMonth() ===
+                      new Date().getUTCMonth()
+                    );
+                  }}
+                />
               )}
-            </SpendingsContext.Consumer>
-          </tbody>
-        </table>
+            </CategoriesContext.Consumer>
+          )}
+        </SpendingsContext.Consumer>
         <h2>All time spendings</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Price</th>
-              <th>Quantity</th>
-            </tr>
-          </thead>
-          <tbody>
-            <SpendingsContext.Consumer>
-              {(context) => (
-                <CategoriesContext.Consumer>
-                  {(categoriesContext) =>
-                    context.state.expenses.map((item) => (
-                      <tr key={item.id}>
-                        <td>{item.name} </td>
-                        <td>{item.category} </td>
-                        <td>{item.price} </td>
-                        <td>{item.quantity} </td>
-                        <td>
-                          <button
-                            onClick={() => {
-                              context.deleteExpense(
-                                item.id,
-                                item.price,
-                                item.quantity,
-                                item.account
-                              );
-                              categoriesContext.addToCategorySpent(
-                                item.category,
-                                -item.price
-                              );
-                            }}
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  }
-                </CategoriesContext.Consumer>
+
+        <SpendingsContext.Consumer>
+          {(spendingsContext) => (
+            <CategoriesContext.Consumer>
+              {(categoriesContext) => (
+                <SpendingsByDate
+                  expenses={spendingsContext.state.expenses}
+                  deleteExpense={spendingsContext.deleteExpense}
+                  addToCategorySpent={categoriesContext.addToCategorySpent}
+                  dateCondition={(item) => {
+                    return (
+                      new Date(item.date).getUTCMonth() ===
+                      new Date().getUTCMonth()
+                    );
+                  }}
+                />
               )}
-            </SpendingsContext.Consumer>
-          </tbody>
-        </table>
+            </CategoriesContext.Consumer>
+          )}
+        </SpendingsContext.Consumer>
       </>
     );
   }
