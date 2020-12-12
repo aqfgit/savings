@@ -58,8 +58,10 @@ class SpendingsProvider extends React.Component {
 
   addExpense({ name, category, account, price, quantity }) {
     const expenses = this.state.expenses.slice();
-    console.log(category);
     const id = this.state.idCounter;
+    const date = new Date().toUTCString();
+    console.log(date);
+
     this.setState({
       id,
       expenses: expenses.concat({
@@ -69,6 +71,7 @@ class SpendingsProvider extends React.Component {
         price,
         quantity,
         id,
+        date,
       }),
       idCounter: id + 1,
     });
