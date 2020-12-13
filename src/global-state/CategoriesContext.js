@@ -20,7 +20,6 @@ class CategoriesProvider extends React.Component {
 
   componentWillMount() {
     this.updateStateWithLocalStorage();
-    console.log("first");
     window.addEventListener(
       "beforeunload",
       this.saveStateToLocalStorage.bind(this)
@@ -55,7 +54,6 @@ class CategoriesProvider extends React.Component {
   saveStateToLocalStorage() {
     const stateToUpdate = ["categories"];
     for (let key of stateToUpdate) {
-      console.log(key, JSON.stringify(this.state[key]));
       localStorage.setItem(key, JSON.stringify(this.state[key]));
     }
   }
@@ -77,89 +75,71 @@ class CategoriesProvider extends React.Component {
   }
 
   addToCategorySpent(name, money) {
-    this.setState(
-      (state) => {
-        const categories = state.categories.slice();
-        const updatedCategories = categories.map((cat) => {
-          if (cat.name === name) {
-            const catCopy = Object.assign({}, cat);
-            catCopy.spent += parseInt(money);
-            return catCopy;
-          }
-          return cat;
-        });
-        return { categories: updatedCategories };
-      },
-      () => console.log(this.state.categories)
-    );
+    this.setState((state) => {
+      const categories = state.categories.slice();
+      const updatedCategories = categories.map((cat) => {
+        if (cat.name === name) {
+          const catCopy = Object.assign({}, cat);
+          catCopy.spent += parseInt(money);
+          return catCopy;
+        }
+        return cat;
+      });
+      return { categories: updatedCategories };
+    });
   }
 
   changeCategoryLimit(name, newLimit) {
-    this.setState(
-      (state) => {
-        const categories = state.categories.slice();
-        const updatedCategories = categories.map((cat) => {
-          if (cat.name === name) {
-            const catCopy = Object.assign({}, cat);
-            catCopy.limit = newLimit;
-            return catCopy;
-          }
-          return cat;
-        });
-        return { categories: updatedCategories };
-      },
-      () => console.log(this.state.categories)
-    );
+    this.setState((state) => {
+      const categories = state.categories.slice();
+      const updatedCategories = categories.map((cat) => {
+        if (cat.name === name) {
+          const catCopy = Object.assign({}, cat);
+          catCopy.limit = newLimit;
+          return catCopy;
+        }
+        return cat;
+      });
+      return { categories: updatedCategories };
+    });
   }
 
   setBudgetLimitReset(name, bool) {
-    this.setState(
-      (state) => {
-        const categories = state.categories.slice();
-        const updatedCategories = categories.map((cat) => {
-          if (cat.name === name) {
-            const catCopy = Object.assign({}, cat);
-            catCopy.monthlyBudgetReset = bool;
-            return catCopy;
-          }
-          return cat;
-        });
-        return { categories: updatedCategories };
-      },
-      () => console.log(this.state.categories)
-    );
+    this.setState((state) => {
+      const categories = state.categories.slice();
+      const updatedCategories = categories.map((cat) => {
+        if (cat.name === name) {
+          const catCopy = Object.assign({}, cat);
+          catCopy.monthlyBudgetReset = bool;
+          return catCopy;
+        }
+        return cat;
+      });
+      return { categories: updatedCategories };
+    });
   }
 
   resetCategorySpent(name) {
-    this.setState(
-      (state) => {
-        const categories = state.categories.slice();
-        const updatedCategories = categories.map((cat) => {
-          if (cat.name === name) {
-            const catCopy = Object.assign({}, cat);
-            catCopy.spent = 0;
-            return catCopy;
-          }
-          return cat;
-        });
-        return { categories: updatedCategories };
-      },
-      () => console.log(this.state.categories)
-    );
+    this.setState((state) => {
+      const categories = state.categories.slice();
+      const updatedCategories = categories.map((cat) => {
+        if (cat.name === name) {
+          const catCopy = Object.assign({}, cat);
+          catCopy.spent = 0;
+          return catCopy;
+        }
+        return cat;
+      });
+      return { categories: updatedCategories };
+    });
   }
 
   removeCategory(name) {
     const categories = this.state.categories.slice();
     const updatedCategories = categories.filter((cat) => cat.name !== name);
-    this.setState(
-      () => ({
-        categories: updatedCategories,
-      })
-      // () => {
-      //   const newCategory = this.changeCategory() || "";
-      //   this.handleCategoryInputChange(newCategory);
-      // }
-    );
+    this.setState(() => ({
+      categories: updatedCategories,
+    }));
   }
 
   isNameDuplicate(name) {
@@ -175,7 +155,6 @@ class CategoriesProvider extends React.Component {
   }
 
   render() {
-    console.log("RENDER", this.state.categories);
     return (
       <CategoriesContext.Provider
         value={{

@@ -60,8 +60,6 @@ class Spendings extends React.Component {
 
     if (categories.length) {
       fieldsValues.category = categories[0].name;
-      console.log(categories[0].name);
-
       fieldsValid.category = true;
     }
     if (accounts.length) {
@@ -123,7 +121,6 @@ class Spendings extends React.Component {
 
   render() {
     const { fieldsValid } = this.state;
-    console.log(this.state.fieldsValues.category);
 
     const priceInputBorder = {
       border: fieldsValid.price ? null : "1px solid red",
@@ -155,7 +152,6 @@ class Spendings extends React.Component {
 
                     if (formValid(this.state)) {
                       context.addExpense(this.state.fieldsValues);
-                      console.log(this.state.fieldsValues.category);
                       categoriesContext.addToCategorySpent(
                         this.state.fieldsValues.category,
                         this.state.fieldsValues.price

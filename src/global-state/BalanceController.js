@@ -11,10 +11,6 @@ import { SpendingsProvider } from "./SpendingsContext";
 class BalanceController extends React.Component {
   constructor(props) {
     super(props);
-    /*[
-      { name: "wallet", balance: 0 },
-      { name: "card", balance: 0 },
-    ],*/
     this.state = {
       balance: 0,
       accounts: [],
@@ -63,9 +59,6 @@ class BalanceController extends React.Component {
   saveStateToLocalStorage() {
     const stateToUpdate = ["balance", "accounts"];
     for (let key of stateToUpdate) {
-      console.log(this.state.balance);
-      console.log(key);
-
       localStorage.setItem(key, JSON.stringify(this.state[key]));
     }
   }
@@ -82,15 +75,9 @@ class BalanceController extends React.Component {
   removeAccount(name) {
     const accounts = this.state.accounts.slice();
     const updatedAccounts = accounts.filter((acc) => acc.name !== name);
-    this.setState(
-      () => ({
-        accounts: updatedAccounts,
-      })
-      // () => {
-      //   const newCategory = this.changeCategory() || "";
-      //   this.handleCategoryInputChange(newCategory);
-      // }
-    );
+    this.setState(() => ({
+      accounts: updatedAccounts,
+    }));
   }
 
   isNameDuplicate(name) {

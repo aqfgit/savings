@@ -43,7 +43,7 @@ class SpendingsProvider extends React.Component {
           value = JSON.parse(value);
           this.setState({ [key]: value });
         } catch (e) {
-          this.setState({ [key]: value });
+          console.error(e);
         }
       }
     }
@@ -60,7 +60,6 @@ class SpendingsProvider extends React.Component {
     const expenses = this.state.expenses.slice();
     const id = this.state.idCounter;
     const date = new Date().toUTCString();
-    console.log(date);
 
     this.setState({
       id,

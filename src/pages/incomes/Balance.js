@@ -50,7 +50,6 @@ class Balance extends React.Component {
   }
 
   handleAddToBudget() {
-    console.log(this.state.accountInputValue);
     this.props.addToBudget(
       this.state.balanceInputValue,
       this.state.accountInputValue
