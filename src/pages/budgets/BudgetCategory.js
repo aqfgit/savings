@@ -1,5 +1,5 @@
 import React from "react";
-import { numberValueIsValid } from "../../utils/inputValidation";
+import SetNewLimit from "./SetNewLimit";
 
 class BudgetCategory extends React.Component {
   constructor(props) {
@@ -7,11 +7,7 @@ class BudgetCategory extends React.Component {
 
     this.state = {
       changeLimit: false,
-      isLimitValid: false,
-      limitValue: 0,
     };
-
-    this.handleLimitInputChange = this.handleLimitInputChange.bind(this);
   }
 
   componentDidMount() {
@@ -27,14 +23,6 @@ class BudgetCategory extends React.Component {
     }
   }
 
-  handleLimitInputChange(e) {
-    const isInputValid = numberValueIsValid(e.target.value);
-    this.setState({
-      limitValue: e.target.value,
-      isLimitValid: isInputValid,
-    });
-  }
-
   render() {
     return (
       <>
@@ -44,7 +32,7 @@ class BudgetCategory extends React.Component {
           {
             <div>
               Limit:{" "}
-              {this.props.category.limit
+              {this.props.category.limit || this.props.category.limit > 0
                 ? this.props.category.limit
                 : "No limit set"}
               {this.props.category.spent > this.props.category.limit ? (
@@ -64,28 +52,10 @@ class BudgetCategory extends React.Component {
             </button>
           }
           {this.state.changeLimit ? (
-            <div>
-              <label htmlFor={`change${this.props.category.name}Limit`}>
-                New limit:
-              </label>
-              <input
-                id={`change${this.props.category.name}Limit`}
-                type="number"
-                value={this.state.limitValue}
-                onChange={this.handleLimitInputChange}
-              />
-              <button
-                onClick={() => {
-                  if (!this.state.isLimitValid) return;
-                  this.props.changeCategoryLimit(
-                    this.props.category.name,
-                    this.state.limitValue
-                  );
-                }}
-              >
-                Set new limit
-              </button>
-            </div>
+            <SetNewLimit
+              category={this.props.category}
+              changeCategoryLimit={this.props.changeCategoryLimit}
+            />
           ) : null}
         </li>
       </>
