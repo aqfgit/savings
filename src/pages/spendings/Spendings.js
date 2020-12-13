@@ -15,6 +15,8 @@ const initialFieldsState = {
     account: "",
     price: 0,
     quantity: 1,
+    dateDay: new Date(),
+    dateMonth: new Date(),
   },
   fieldsValid: {
     name: false,
@@ -92,6 +94,10 @@ class Spendings extends React.Component {
         break;
       case "account":
         fieldsValid.account = value.length > 0;
+        break;
+      case "dateDay":
+        break;
+      case "monthDay":
         break;
 
       default:
@@ -232,7 +238,21 @@ class Spendings extends React.Component {
             </CategoriesContext.Consumer>
           )}
         </SpendingsContext.Consumer>
-        <h2>Todays ({new Date().toLocaleDateString()}) spendings: </h2>
+        <h2>
+          {new Date(this.state.fieldsValues.dateDay).toLocaleDateString() ==
+          new Date().toLocaleDateString()
+            ? "Todays"
+            : null}{" "}
+          ({new Date(this.state.fieldsValues.dateDay).toLocaleDateString()})
+          spendings:{" "}
+        </h2>
+        <label htmlFor="changeDay">Change day</label>
+        <input
+          value={this.state.fieldsValues.dateDay}
+          onChange={this.handleInputChange}
+          name="dateDay"
+          type="date"
+        />
         <SpendingsContext.Consumer>
           {(spendingsContext) => (
             <CategoriesContext.Consumer>
@@ -243,8 +263,10 @@ class Spendings extends React.Component {
                   addToCategorySpent={categoriesContext.addToCategorySpent}
                   dateCondition={(item) => {
                     return (
-                      new Date(item.date).getUTCDate() ===
-                      new Date().getUTCDate()
+                      new Date(item.date).toLocaleDateString() ===
+                      new Date(
+                        this.state.fieldsValues.dateDay
+                      ).toLocaleDateString()
                     );
                   }}
                 />
@@ -252,7 +274,19 @@ class Spendings extends React.Component {
             </CategoriesContext.Consumer>
           )}
         </SpendingsContext.Consumer>
-        <h2>This months spendings</h2>
+        <h2>
+          {new Date(this.state.fieldsValues.dateMonth).toLocaleString("en-us", {
+            month: "long",
+          })}{" "}
+          spendings
+        </h2>
+        <label htmlFor="changeDay">Change month</label>
+        <input
+          value={this.state.fieldsValues.dateMonth}
+          onChange={this.handleInputChange}
+          name="dateMonth"
+          type="month"
+        />
         <SpendingsContext.Consumer>
           {(spendingsContext) => (
             <CategoriesContext.Consumer>
@@ -264,7 +298,7 @@ class Spendings extends React.Component {
                   dateCondition={(item) => {
                     return (
                       new Date(item.date).getUTCMonth() ===
-                      new Date().getUTCMonth()
+                      new Date(this.state.fieldsValues.dateMonth).getUTCMonth()
                     );
                   }}
                 />
