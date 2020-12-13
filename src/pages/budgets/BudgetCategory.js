@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import SetNewLimit from "./SetNewLimit";
 
 class BudgetCategory extends React.Component {
@@ -10,7 +11,7 @@ class BudgetCategory extends React.Component {
     };
   }
 
-  componentDidMount() {
+  resetCategoryBudgetLimitIfItsNewMonth() {
     const FIRST_DAY_OF_THE_MONTH = 1;
     if (
       new Date().getUTCDate() === FIRST_DAY_OF_THE_MONTH &&
@@ -21,6 +22,10 @@ class BudgetCategory extends React.Component {
     } else if (new Date().getUTCDate() > FIRST_DAY_OF_THE_MONTH) {
       this.props.setBudgetLimitReset(this.props.category.name, false);
     }
+  }
+
+  componentDidMount() {
+    this.resetCategoryBudgetLimitIfItsNewMonth();
   }
 
   render() {
@@ -63,6 +68,11 @@ class BudgetCategory extends React.Component {
   }
 }
 
-BudgetCategory.propTypes = {};
+BudgetCategory.propTypes = {
+  category: PropTypes.object.isRequired,
+  changeCategoryLimit: PropTypes.func.isRequired,
+  resetCategorySpent: PropTypes.func.isRequired,
+  setBudgetLimitReset: PropTypes.func.isRequired,
+};
 
 export default BudgetCategory;

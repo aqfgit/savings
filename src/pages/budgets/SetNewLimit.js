@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { numberValueIsValid } from "../../utils/inputValidation";
 
 class SetNewLimit extends React.Component {
@@ -51,6 +52,9 @@ class SetNewLimit extends React.Component {
   }
 }
 
-SetNewLimit.propTypes = {};
+SetNewLimit.propTypes = {
+  category: PropTypes.object.isRequired,
+  changeCategoryLimit: PropTypes.func.isRequired,
+};
 
 export default SetNewLimit;
