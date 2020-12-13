@@ -14,6 +14,19 @@ class BudgetCategory extends React.Component {
     this.handleLimitInputChange = this.handleLimitInputChange.bind(this);
   }
 
+  componentDidMount() {
+    const FIRST_DAY_OF_THE_MONTH = 1;
+    if (
+      new Date().getUTCDate() === FIRST_DAY_OF_THE_MONTH &&
+      !this.props.category.monthlyBudgetReset
+    ) {
+      this.props.setBudgetLimitReset(this.props.category.name, true);
+      this.props.resetCategorySpent(this.props.category.name);
+    } else if (new Date().getUTCDate() > FIRST_DAY_OF_THE_MONTH) {
+      this.props.setBudgetLimitReset(this.props.category.name, false);
+    }
+  }
+
   handleLimitInputChange(e) {
     const isInputValid = numberValueIsValid(e.target.value);
     this.setState({

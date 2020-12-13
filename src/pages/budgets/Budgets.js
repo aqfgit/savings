@@ -48,6 +48,8 @@ class Budgets extends React.Component {
                   key={item.name}
                   category={item}
                   changeCategoryLimit={categoriesContext.changeCategoryLimit}
+                  resetCategorySpent={categoriesContext.resetCategorySpent}
+                  setBudgetLimitReset={categoriesContext.setBudgetLimitReset}
                 />
               ))
             }

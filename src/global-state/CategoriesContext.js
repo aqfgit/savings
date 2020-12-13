@@ -14,10 +14,13 @@ class CategoriesProvider extends React.Component {
     this.isNameDuplicate = this.isNameDuplicate.bind(this);
     this.addToCategorySpent = this.addToCategorySpent.bind(this);
     this.changeCategoryLimit = this.changeCategoryLimit.bind(this);
+    this.resetCategorySpent = this.resetCategorySpent.bind(this);
+    this.setBudgetLimitReset = this.setBudgetLimitReset.bind(this);
   }
 
   componentWillMount() {
     this.updateStateWithLocalStorage();
+    console.log("first");
     window.addEventListener(
       "beforeunload",
       this.saveStateToLocalStorage.bind(this)
@@ -50,8 +53,6 @@ class CategoriesProvider extends React.Component {
   }
 
   saveStateToLocalStorage() {
-    console.log(1);
-
     const stateToUpdate = ["categories"];
     for (let key of stateToUpdate) {
       console.log(key, JSON.stringify(this.state[key]));
@@ -60,7 +61,12 @@ class CategoriesProvider extends React.Component {
   }
 
   addCategory(name) {
-    const categoryObj = { name, spent: 0, limit: null };
+    const categoryObj = {
+      name,
+      spent: 0,
+      limit: null,
+      monthlyBudgetReset: false,
+    };
     this.setState((prevState) => {
       return {
         categories: prevState.categories.concat(categoryObj),
@@ -71,32 +77,75 @@ class CategoriesProvider extends React.Component {
   }
 
   addToCategorySpent(name, money) {
-    console.log(name);
-
-    const categories = this.state.categories.slice();
-    const updatedCategories = categories.map((cat) => {
-      if (cat.name === name) {
-        const catCopy = Object.assign({}, cat);
-        catCopy.spent += parseInt(money);
-        console.log(2);
-        return catCopy;
-      }
-      return cat;
-    });
-    this.setState({ categories: updatedCategories });
+    this.setState(
+      (state) => {
+        const categories = state.categories.slice();
+        const updatedCategories = categories.map((cat) => {
+          if (cat.name === name) {
+            const catCopy = Object.assign({}, cat);
+            catCopy.spent += parseInt(money);
+            return catCopy;
+          }
+          return cat;
+        });
+        return { categories: updatedCategories };
+      },
+      () => console.log(this.state.categories)
+    );
   }
 
   changeCategoryLimit(name, newLimit) {
-    const categories = this.state.categories.slice();
-    const updatedCategories = categories.map((cat) => {
-      if (cat.name === name) {
-        const catCopy = Object.assign({}, cat);
-        catCopy.limit = newLimit;
-        return catCopy;
-      }
-      return cat;
-    });
-    this.setState({ categories: updatedCategories });
+    this.setState(
+      (state) => {
+        const categories = state.categories.slice();
+        const updatedCategories = categories.map((cat) => {
+          if (cat.name === name) {
+            const catCopy = Object.assign({}, cat);
+            catCopy.limit = newLimit;
+            return catCopy;
+          }
+          return cat;
+        });
+        return { categories: updatedCategories };
+      },
+      () => console.log(this.state.categories)
+    );
+  }
+
+  setBudgetLimitReset(name, bool) {
+    this.setState(
+      (state) => {
+        const categories = state.categories.slice();
+        const updatedCategories = categories.map((cat) => {
+          if (cat.name === name) {
+            const catCopy = Object.assign({}, cat);
+            catCopy.monthlyBudgetReset = bool;
+            return catCopy;
+          }
+          return cat;
+        });
+        return { categories: updatedCategories };
+      },
+      () => console.log(this.state.categories)
+    );
+  }
+
+  resetCategorySpent(name) {
+    this.setState(
+      (state) => {
+        const categories = state.categories.slice();
+        const updatedCategories = categories.map((cat) => {
+          if (cat.name === name) {
+            const catCopy = Object.assign({}, cat);
+            catCopy.spent = 0;
+            return catCopy;
+          }
+          return cat;
+        });
+        return { categories: updatedCategories };
+      },
+      () => console.log(this.state.categories)
+    );
   }
 
   removeCategory(name) {
@@ -126,6 +175,7 @@ class CategoriesProvider extends React.Component {
   }
 
   render() {
+    console.log("RENDER", this.state.categories);
     return (
       <CategoriesContext.Provider
         value={{
@@ -135,6 +185,8 @@ class CategoriesProvider extends React.Component {
           isNameDuplicate: this.isNameDuplicate,
           addToCategorySpent: this.addToCategorySpent,
           changeCategoryLimit: this.changeCategoryLimit,
+          resetCategorySpent: this.resetCategorySpent,
+          setBudgetLimitReset: this.setBudgetLimitReset,
         }}
       >
         {this.props.children}
