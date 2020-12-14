@@ -26,9 +26,10 @@ class Balance extends React.Component {
     const accounts = this.props.accounts;
     let fieldsValid = { ...this.state.fieldsValid };
     let fieldsValues = { ...this.state.fieldsValues };
-    fieldsValues.account = accounts[0].name;
-    fieldsValid.account = true;
-    if (accounts) {
+
+    if (accounts.length) {
+      fieldsValues.account = accounts[0].name;
+      fieldsValid.account = true;
       this.setState({
         fieldsValues,
         fieldsValid,

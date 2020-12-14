@@ -3,6 +3,12 @@ import PropTypes from "prop-types";
 import DebtItem from "./DebtItem";
 import { numberValueIsValid } from "../../utils/inputValidation";
 import Select from "../../components/Select";
+import {
+  updateStateWithLocalStorage as utils_updateStateWithLocalStorage,
+  saveStateToLocalStorage as utils_saveStateToLocalStorage,
+} from "../../utils/localStorage";
+
+const STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE = ["debts", "idCounter"];
 
 class Debts extends React.Component {
   constructor(props) {
@@ -62,26 +68,17 @@ class Debts extends React.Component {
   }
 
   updateStateWithLocalStorage() {
-    const stateToUpdate = ["debts", "idCounter"];
-    for (let key of stateToUpdate) {
-      if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
-        let value = localStorage.getItem(key);
-
-        try {
-          value = JSON.parse(value);
-          this.setState({ [key]: value });
-        } catch (e) {
-          this.setState({ [key]: value });
-        }
-      }
-    }
+    utils_updateStateWithLocalStorage(
+      this.setState.bind(this),
+      STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE
+    );
   }
 
   saveStateToLocalStorage() {
-    const stateToUpdate = ["debts", "idCounter"];
-    for (let key of stateToUpdate) {
-      localStorage.setItem(key, JSON.stringify(this.state[key]));
-    }
+    utils_saveStateToLocalStorage(
+      this.state,
+      STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE
+    );
   }
 
   handleInputChange(e) {

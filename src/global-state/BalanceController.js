@@ -7,6 +7,12 @@ import PageNotfound from "../pages/404/PageNotFound";
 import { Route, Link, Switch, BrowserRouter as Router } from "react-router-dom";
 import { CategoriesProvider } from "./CategoriesContext";
 import { SpendingsProvider } from "./SpendingsContext";
+import {
+  updateStateWithLocalStorage as utils_updateStateWithLocalStorage,
+  saveStateToLocalStorage as utils_saveStateToLocalStorage,
+} from "../utils/localStorage";
+
+const STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE = ["balance", "accounts"];
 
 class BalanceController extends React.Component {
   constructor(props) {
@@ -25,42 +31,32 @@ class BalanceController extends React.Component {
 
   componentWillMount() {
     this.updateStateWithLocalStorage();
-    window.addEventListener(
-      "beforeunload",
-      this.saveStateToLocalStorage.bind(this)
-    );
+    window.addEventListener("beforeunload", () => {
+      this.saveStateToLocalStorage().bind(this);
+    });
   }
 
   componentWillUnmount() {
-    window.removeEventListener(
-      "beforeunload",
-      this.saveStateToLocalStorage.bind(this)
-    );
+    window.removeEventListener("beforeunload", () => {
+      this.saveStateToLocalStorage().bind(this);
+    });
+    console.log(this.state);
 
     this.saveStateToLocalStorage();
   }
 
   updateStateWithLocalStorage() {
-    const stateToUpdate = ["balance", "accounts"];
-    for (let key of stateToUpdate) {
-      if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
-        let value = localStorage.getItem(key);
-
-        try {
-          value = JSON.parse(value);
-          this.setState({ [key]: value });
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
+    utils_updateStateWithLocalStorage(
+      this.setState.bind(this),
+      STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE
+    );
   }
 
   saveStateToLocalStorage() {
-    const stateToUpdate = ["balance", "accounts"];
-    for (let key of stateToUpdate) {
-      localStorage.setItem(key, JSON.stringify(this.state[key]));
-    }
+    utils_saveStateToLocalStorage(
+      this.state,
+      STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE
+    );
   }
 
   addAccount(name) {
@@ -103,10 +99,15 @@ class BalanceController extends React.Component {
       }
       return item;
     });
-    this.setState((prevState) => ({
-      balance: prevState.balance + intValue,
-      accounts,
-    }));
+    this.setState(
+      (prevState) => ({
+        balance: prevState.balance + intValue,
+        accounts,
+      }),
+      () => {
+        console.log(this.state);
+      }
+    );
   }
 
   substractFromBudget(price, account) {

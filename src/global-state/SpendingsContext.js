@@ -1,6 +1,12 @@
 import React from "react";
+import {
+  updateStateWithLocalStorage as utils_updateStateWithLocalStorage,
+  saveStateToLocalStorage as utils_saveStateToLocalStorage,
+} from "../utils/localStorage";
 
 const SpendingsContext = React.createContext();
+
+const STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE = ["expenses", "idCounter"];
 
 class SpendingsProvider extends React.Component {
   constructor(props) {
@@ -34,26 +40,17 @@ class SpendingsProvider extends React.Component {
   }
 
   updateStateWithLocalStorage() {
-    const stateToUpdate = ["expenses", "idCounter"];
-    for (let key of stateToUpdate) {
-      if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
-        let value = localStorage.getItem(key);
-
-        try {
-          value = JSON.parse(value);
-          this.setState({ [key]: value });
-        } catch (e) {
-          console.error(e);
-        }
-      }
-    }
+    utils_updateStateWithLocalStorage(
+      this.setState.bind(this),
+      STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE
+    );
   }
 
   saveStateToLocalStorage() {
-    const stateToUpdate = ["expenses", "idCounter"];
-    for (let key of stateToUpdate) {
-      localStorage.setItem(key, JSON.stringify(this.state[key]));
-    }
+    utils_saveStateToLocalStorage(
+      this.state,
+      STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE
+    );
   }
 
   addExpense({ name, category, account, price, quantity }) {

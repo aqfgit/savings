@@ -7,6 +7,12 @@ import {
 } from "../../utils/localStorage";
 import { numberValueIsValid, formValid } from "../../utils/inputValidation";
 import Select from "../../components/Select";
+import {
+  updateStateWithLocalStorage as utils_updateStateWithLocalStorage,
+  saveStateToLocalStorage as utils_saveStateToLocalStorage,
+} from "../../utils/localStorage";
+
+const STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE = ["incomes", "idCounter"];
 
 class IncomeSources extends React.Component {
   constructor(props) {
@@ -40,7 +46,7 @@ class IncomeSources extends React.Component {
     const accounts = this.props.accounts;
     let fieldsValid = { ...this.state.fieldsValid };
     let fieldsValues = { ...this.state.fieldsValues };
-    if (accounts) {
+    if (accounts.length) {
       fieldsValues.account = accounts[0].name;
       fieldsValid.account = true;
       this.setState({
@@ -84,26 +90,17 @@ class IncomeSources extends React.Component {
   }
 
   updateStateWithLocalStorage() {
-    const stateToUpdate = ["incomes", "idCounter"];
-    for (let key of stateToUpdate) {
-      if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
-        let value = localStorage.getItem(key);
-
-        try {
-          value = JSON.parse(value);
-          this.setState({ [key]: value });
-        } catch (e) {
-          this.setState({ [key]: value });
-        }
-      }
-    }
+    utils_updateStateWithLocalStorage(
+      this.setState.bind(this),
+      STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE
+    );
   }
 
   saveStateToLocalStorage() {
-    const stateToUpdate = ["incomes", "idCounter"];
-    for (let key of stateToUpdate) {
-      localStorage.setItem(key, JSON.stringify(this.state[key]));
-    }
+    utils_saveStateToLocalStorage(
+      this.state,
+      STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE
+    );
   }
 
   handleInputChange(e) {

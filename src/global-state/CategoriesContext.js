@@ -1,6 +1,12 @@
 import React from "react";
+import {
+  updateStateWithLocalStorage as utils_updateStateWithLocalStorage,
+  saveStateToLocalStorage as utils_saveStateToLocalStorage,
+} from "../utils/localStorage";
 
 const CategoriesContext = React.createContext();
+
+const STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE = ["categories"];
 
 class CategoriesProvider extends React.Component {
   constructor(props) {
@@ -36,26 +42,17 @@ class CategoriesProvider extends React.Component {
   }
 
   updateStateWithLocalStorage() {
-    const stateToUpdate = ["categories"];
-    for (let key of stateToUpdate) {
-      if (Object.prototype.hasOwnProperty.call(localStorage, key)) {
-        let value = localStorage.getItem(key);
-
-        try {
-          value = JSON.parse(value);
-          this.setState({ [key]: value });
-        } catch (e) {
-          console.log(e);
-        }
-      }
-    }
+    utils_updateStateWithLocalStorage(
+      this.setState.bind(this),
+      STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE
+    );
   }
 
   saveStateToLocalStorage() {
-    const stateToUpdate = ["categories"];
-    for (let key of stateToUpdate) {
-      localStorage.setItem(key, JSON.stringify(this.state[key]));
-    }
+    utils_saveStateToLocalStorage(
+      this.state,
+      STATE_ITEMS_TO_SAVE_IN_LOCAL_STORAGE
+    );
   }
 
   addCategory(name) {
