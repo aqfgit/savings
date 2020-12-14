@@ -8,6 +8,7 @@ import { CategoriesContext } from "../../global-state/CategoriesContext";
 import { SpendingsContext } from "../../global-state/SpendingsContext";
 import SpendingsByDate from "./SpendingsByDate";
 import { formValid } from "../../utils/inputValidation";
+import Select from "../../components/Select";
 
 const initialFieldsState = {
   fieldsValues: {
@@ -163,44 +164,30 @@ class Spendings extends React.Component {
                     />
                   </div>
                   <div>
-                    <label htmlFor="expenseCategory">Category:</label>
-                    <select
-                      value={this.state.fieldsValues.category}
-                      onChange={this.handleInputChange}
-                      onBlur={this.handleInputChange}
-                      name="category"
-                      style={categoryInputBorder}
-                      id="expenseCategory"
-                    >
-                      <CategoriesContext.Consumer>
-                        {(context) =>
-                          context.state.categories.map((item) => {
-                            return (
-                              <option key={item.name} value={item.name}>
-                                {item.name}
-                              </option>
-                            );
-                          })
-                        }
-                      </CategoriesContext.Consumer>
-                    </select>
+                    <CategoriesContext.Consumer>
+                      {(context) => (
+                        <Select
+                          value={this.state.fieldsValues.category}
+                          handleInputChange={this.handleInputChange}
+                          name="category"
+                          id="spendingsCategory"
+                          label="Category:"
+                          array={context.state.categories}
+                          border={categoryInputBorder}
+                        />
+                      )}
+                    </CategoriesContext.Consumer>
                   </div>
                   <div>
-                    <label htmlFor="expenseAccount">Account:</label>
-                    <select
+                    <Select
                       value={this.state.fieldsValues.account}
-                      onChange={this.handleInputChange}
-                      onBlur={this.handleInputChange}
-                      style={accountsInputBorder}
+                      handleInputChange={this.handleInputChange}
                       name="account"
-                      id="expenseAccount"
-                    >
-                      {this.props.accounts.map((account) => (
-                        <option key={account.name} value={account.name}>
-                          {account.name}
-                        </option>
-                      ))}
-                    </select>
+                      id="spendingsAccount"
+                      label="Account:"
+                      array={this.props.accounts}
+                      border={accountsInputBorder}
+                    />
                   </div>
                   <div>
                     <label htmlFor="expenseSpent">Spent:</label>

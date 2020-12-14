@@ -6,6 +6,7 @@ import {
   addDateToLocalStorage,
 } from "../../utils/localStorage";
 import { numberValueIsValid, formValid } from "../../utils/inputValidation";
+import Select from "../../components/Select";
 
 class IncomeSources extends React.Component {
   constructor(props) {
@@ -227,20 +228,14 @@ class IncomeSources extends React.Component {
           id="incomesValue"
           name="value"
         />
-        <label htmlFor="incomesAccount">Account:</label>
-        <select
-          value={this.state.inputAccounts}
-          onChange={this.handleInputChange}
-          onBlur={this.handleInputChange}
-          id="incomesAccount"
+        <Select
+          value={this.state.fieldsValues.account}
+          handleInputChange={this.handleInputChange}
           name="account"
-        >
-          {this.props.accounts.map((account) => (
-            <option key={account.name} value={account.name}>
-              {account.name}
-            </option>
-          ))}
-        </select>
+          id="incomesAccount"
+          label="Accounts:"
+          array={this.props.accounts}
+        />
         <button onClick={this.addIncome}>Add income</button>
         <table>
           <thead>

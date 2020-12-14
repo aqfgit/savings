@@ -8,32 +8,40 @@ class Select extends React.Component {
   }
 
   handleChange(e) {
-    this.props.onChange(e.target.value);
+    this.props.onChange(e);
   }
 
   render() {
-    const border = this.props.style.border || null;
+    //const border = this.props.style.border || null;
 
     return (
       <>
+        <label htmlFor={this.props.id}>{this.props.label}</label>
         <select
-          id="select"
-          value={this.props.inputValue}
-          onChange={this.handleChange}
-          style={{ border }}
+          value={this.props.value}
+          onChange={this.props.handleInputChange}
+          onBlur={this.props.handleInputChange}
+          name={this.props.name}
+          id={this.props.id}
         >
-          {this.props.children}
+          {this.props.array.map((item) => (
+            <option key={item.name} value={item.name}>
+              {item.name}
+            </option>
+          ))}
         </select>
-        <label>{this.props.label}</label>
       </>
     );
   }
 }
 
 Select.propTypes = {
-  inputValue: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-  label: PropTypes.string.isRequired
+  array: PropTypes.array.isRequired,
+  value: PropTypes.string.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
 };
 
 export default Select;

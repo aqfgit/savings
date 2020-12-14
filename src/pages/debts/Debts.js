@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import DebtItem from "./DebtItem";
 import { numberValueIsValid } from "../../utils/inputValidation";
+import Select from "../../components/Select";
 
 class Debts extends React.Component {
   constructor(props) {
@@ -206,18 +207,14 @@ class Debts extends React.Component {
           onChange={this.handleInputChange}
         />
         <div>
-          <select
-            value={this.state.inputAccount}
-            onChange={this.handleAccountInputChange}
-            onBlur={this.handleAccountInputChange}
+          <Select
+            value={this.state.fieldsValues.account}
+            handleInputChange={this.handleInputChange}
             name="account"
-          >
-            {this.props.accounts.map((account) => (
-              <option key={account.name} value={account.name}>
-                {account.name}
-              </option>
-            ))}
-          </select>
+            id="debtsAccounts"
+            label="Accounts:"
+            array={this.props.accounts}
+          />
         </div>
         <button onClick={this.addDebt}>Add debt</button>
         <table>

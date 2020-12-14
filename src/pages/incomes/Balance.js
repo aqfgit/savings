@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { numberValueIsValid } from "../../utils/inputValidation";
+import Select from "../../components/Select";
 
 class Balance extends React.Component {
   constructor(props) {
@@ -92,20 +93,14 @@ class Balance extends React.Component {
           style={inputBorder}
           id="balance"
         />
-        <label htmlFor="balanceAccount">Account: </label>
-        <select
-          onChange={this.handleInputChange}
-          onBlur={this.handleInputChange}
-          value={this.state.accountInputValue}
+        <Select
+          value={this.state.fieldsValues.account}
+          handleInputChange={this.handleInputChange}
           name="account"
           id="balanceAccount"
-        >
-          {this.props.accounts.map((account) => (
-            <option key={account.name} value={account.name}>
-              {account.name}
-            </option>
-          ))}
-        </select>
+          label="Accounts:"
+          array={this.props.accounts}
+        />
         <button onClick={this.handleAddToBudget}>Add to budget</button>
         <p>My Balance: {this.props.balance}$</p>
         <p>Accounts: </p>
