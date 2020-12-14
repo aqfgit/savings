@@ -12,7 +12,7 @@ class Select extends React.Component {
   }
 
   render() {
-    //const border = this.props.style.border || null;
+    const border = this.props.border || null;
 
     return (
       <>
@@ -23,6 +23,7 @@ class Select extends React.Component {
           onBlur={this.props.handleInputChange}
           name={this.props.name}
           id={this.props.id}
+          style={{ border }}
         >
           {this.props.array.map((item) => (
             <option key={item.name} value={item.name}>

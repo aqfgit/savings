@@ -35,10 +35,14 @@ class Debts extends React.Component {
     this.updateStateWithLocalStorage();
 
     const accounts = this.props.accounts;
+    let fieldsValid = { ...this.state.fieldsValid };
+    let fieldsValues = { ...this.state.fieldsValues };
     if (accounts) {
+      fieldsValues.account = accounts[0].name;
+      fieldsValid.account = true;
       this.setState({
-        inputAccount: accounts[0].name,
-        accountInputIsValid: true,
+        fieldsValues,
+        fieldsValid,
       });
     }
 
@@ -125,6 +129,7 @@ class Debts extends React.Component {
       debts: prevState.debts.concat({
         id,
         name: this.state.fieldsValues.name,
+        account: this.state.fieldsValues.account,
         initialMoney: intValue,
         moneyPaid: 0,
       }),
@@ -150,10 +155,7 @@ class Debts extends React.Component {
     const newMoneyPaid = debts[index].moneyPaid;
     const initialMoney = debts[index].initialMoney;
     const rest = newMoneyPaid <= initialMoney ? 0 : newMoneyPaid - initialMoney;
-    this.props.substractFromBudget(
-      money - rest,
-      this.state.fieldsValues.account
-    );
+    this.props.substractFromBudget(money - rest, debts[index].account);
 
     this.setState({
       debts,
@@ -178,6 +180,7 @@ class Debts extends React.Component {
             name={item.name}
             initialMoney={item.initialMoney}
             moneyPaid={item.moneyPaid}
+            account={item.account}
             payDebt={this.payDebt}
             deleteDebt={this.deleteDebt}
           />

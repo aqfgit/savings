@@ -63,7 +63,9 @@ class DebtItem extends React.Component {
 
     return (
       <>
-        <td>{this.props.name} </td>
+        <td>
+          {this.props.name} (Account: {this.props.account}){" "}
+        </td>
         <td>
           {moneyPaid} / {this.props.initialMoney}{" "}
         </td>
@@ -100,6 +102,7 @@ class DebtItem extends React.Component {
 DebtItem.propTypes = {
   id: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
+  account: PropTypes.string.isRequired,
   initialMoney: PropTypes.number.isRequired,
   moneyPaid: PropTypes.number.isRequired,
   payDebt: PropTypes.func.isRequired,
