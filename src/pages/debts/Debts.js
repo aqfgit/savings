@@ -1,12 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Input from "../../components/Input";
-import Button from "../../components/Button";
 import DebtItem from "./DebtItem";
-import {
-  numberValueIsValid,
-  textValueIsValid,
-} from "../../utils/inputValidation";
+import { numberValueIsValid } from "../../utils/inputValidation";
 
 class Debts extends React.Component {
   constructor(props) {
@@ -14,18 +9,21 @@ class Debts extends React.Component {
 
     this.state = {
       debts: [],
-      inputName: "",
-      inputValue: "",
-      inputAccount: "",
+      fieldsValues: {
+        name: "",
+        value: "",
+        account: "",
+      },
+      fieldsValid: {
+        name: false,
+        value: false,
+        account: false,
+      },
+
       idCounter: 0,
-      valueInputIsValid: false,
-      nameInputIsValid: false,
-      accountInputIsValid: false,
     };
 
-    this.handleValueInputChange = this.handleValueInputChange.bind(this);
-    this.handleNameInputChange = this.handleNameInputChange.bind(this);
-    this.handleAccountInputChange = this.handleAccountInputChange.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
 
     this.addDebt = this.addDebt.bind(this);
     this.deleteDebt = this.deleteDebt.bind(this);
@@ -81,52 +79,57 @@ class Debts extends React.Component {
     }
   }
 
-  handleValueInputChange(value) {
-    const isInputValid = numberValueIsValid(value);
+  handleInputChange(e) {
+    const { name, value } = e.target;
+    let fieldsValid = { ...this.state.fieldsValid };
+    let fieldsValues = { ...this.state.fieldsValues };
+    switch (name) {
+      case "name":
+        fieldsValid.name = value.length > 0;
+        break;
+      case "value":
+        fieldsValid.value = parseInt(value) > 0 && numberValueIsValid(value);
+        break;
+      case "account":
+        fieldsValid.account = value.length > 0;
+        break;
+      default:
+        break;
+    }
+    fieldsValues[name] = value;
     this.setState({
-      inputValue: value,
-      valueInputIsValid: isInputValid,
-    });
-  }
-
-  handleNameInputChange(name) {
-    const isInputValid = textValueIsValid(name);
-    this.setState({
-      inputName: name,
-      nameInputIsValid: isInputValid,
-    });
-  }
-
-  handleAccountInputChange(e) {
-    const isInputValid = textValueIsValid(e.target.value);
-    this.setState({
-      inputAccount: e.target.value,
-      accountInputIsValid: isInputValid,
+      fieldsValid,
+      fieldsValues,
     });
   }
 
   addDebt() {
-    const value = this.state.inputValue;
+    let fieldsValid = { ...this.state.fieldsValid };
+    let fieldsValues = { ...this.state.fieldsValues };
+    const value = fieldsValues.value;
     const intValue = parseInt(value);
 
-    if (!this.state.valueInputIsValid || !this.state.nameInputIsValid) {
+    if (!fieldsValid.value || !fieldsValid.name) {
       return;
     }
 
     const id = this.state.idCounter;
 
+    fieldsValues.value = "";
+    fieldsValues.name = "";
+    fieldsValid.value = false;
+    fieldsValid.name = false;
+
     this.setState((prevState) => ({
       debts: prevState.debts.concat({
         id,
-        name: this.state.inputName,
+        name: this.state.fieldsValues.name,
         initialMoney: intValue,
         moneyPaid: 0,
       }),
       idCounter: id + 1,
-      inputValue: "",
-      inputName: "",
-      valueInputIsValid: false,
-      nameInputIsValid: false,
+      fieldsValues,
+      fieldsValid,
     }));
   }
 
@@ -146,7 +149,10 @@ class Debts extends React.Component {
     const newMoneyPaid = debts[index].moneyPaid;
     const initialMoney = debts[index].initialMoney;
     const rest = newMoneyPaid <= initialMoney ? 0 : newMoneyPaid - initialMoney;
-    this.props.substractFromBudget(money - rest, this.state.inputAccount);
+    this.props.substractFromBudget(
+      money - rest,
+      this.state.fieldsValues.account
+    );
 
     this.setState({
       debts,
@@ -155,11 +161,11 @@ class Debts extends React.Component {
 
   render() {
     const valueInputBorder = {
-      border: this.state.valueInputIsValid ? null : "1px solid red",
+      border: this.state.fieldsValid.value ? null : "1px solid red",
     };
 
     const nameInputBorder = {
-      border: this.state.nameInputIsValid ? null : "1px solid red",
+      border: this.state.fieldsValid.name ? null : "1px solid red",
     };
 
     const debts = this.state.debts;
@@ -181,17 +187,23 @@ class Debts extends React.Component {
     return (
       <>
         <h2>Debts</h2>
-        <Input
-          inputValue={this.state.inputName}
-          onChange={this.handleNameInputChange}
-          dataType="text"
-          style={nameInputBorder}
+        <label htmlFor="nameInput">Debt name:</label>
+        <input
+          style={{ nameInputBorder }}
+          id="nameInput"
+          name="name"
+          type="text"
+          value={this.state.fieldsValues.name}
+          onChange={this.handleInputChange}
         />
-        <Input
-          inputValue={this.state.inputValue}
-          onChange={this.handleValueInputChange}
-          dataType="number"
-          style={valueInputBorder}
+        <label htmlFor="valueInput">Owned:</label>
+        <input
+          style={{ valueInputBorder }}
+          id="valueInput"
+          name="value"
+          type="number"
+          value={this.state.fieldsValues.value}
+          onChange={this.handleInputChange}
         />
         <div>
           <select
@@ -207,7 +219,7 @@ class Debts extends React.Component {
             ))}
           </select>
         </div>
-        <Button onClick={this.addDebt} name="Add debt" />
+        <button onClick={this.addDebt}>Add debt</button>
         <table>
           <thead>
             <tr>
@@ -224,6 +236,7 @@ class Debts extends React.Component {
 
 Debts.propTypes = {
   substractFromBudget: PropTypes.func.isRequired,
+  accounts: PropTypes.array.isRequired,
 };
 
 export default Debts;

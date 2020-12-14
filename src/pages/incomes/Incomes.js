@@ -1,40 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import IncomeSources from "./IncomeSources";
-import { numberValueIsValid } from "../../utils/inputValidation";
 import Balance from "./Balance";
 import AddAccount from "./AddAccount";
 
 class Incomes extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      balanceInputValue: "",
-      balanceInputIsValid: false,
-    };
-
-    this.handleBalanceInputChange = this.handleBalanceInputChange.bind(this);
-    this.handleAddToBudget = this.handleAddToBudget.bind(this);
-  }
-
-  handleBalanceInputChange(value) {
-    const isInputValid = numberValueIsValid(value);
-    this.setState({
-      balanceInputValue: value,
-      balanceInputIsValid: isInputValid,
-    });
-  }
-
-  handleAddToBudget() {
-    if (!this.state.balanceInputIsValid) {
-      return;
-    }
-    this.props.addToBudget(this.state.balanceInputValue);
-    this.setState({
-      balanceInputValue: "",
-      balanceInputIsValid: false,
-    });
   }
 
   render() {

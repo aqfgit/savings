@@ -1,82 +1,104 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Input from "../../components/Input";
-import Button from "../../components/Button";
-import {
-  textValueIsValid,
-  numberValueIsValid,
-} from "../../utils/inputValidation";
+import { numberValueIsValid } from "../../utils/inputValidation";
 
 class Balance extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      balanceInputValue: "",
-      accountInputValue: "",
-      accountInputIsValid: false,
-      balanceInputIsValid: false,
+      fieldsValues: {
+        balance: "",
+        account: "",
+      },
+      fieldsValid: {
+        balance: false,
+        account: false,
+      },
     };
 
-    this.handleBalanceInputChange = this.handleBalanceInputChange.bind(this);
-    this.handleAccountsInputChange = this.handleAccountsInputChange.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.handleAddToBudget = this.handleAddToBudget.bind(this);
   }
 
   componentDidMount() {
     const accounts = this.props.accounts;
+    let fieldsValid = { ...this.state.fieldsValid };
+    let fieldsValues = { ...this.state.fieldsValues };
+    fieldsValues.account = accounts[0].name;
+    fieldsValid.account = true;
     if (accounts) {
       this.setState({
-        accountInputValue: accounts[0].name,
-        accountInputIsValid: true,
+        fieldsValues,
+        fieldsValid,
       });
     }
   }
 
-  handleBalanceInputChange(value) {
-    const isInputValid = numberValueIsValid(value);
-    this.setState({
-      balanceInputValue: value,
-      balanceInputIsValid: isInputValid,
-    });
-  }
+  handleInputChange(e) {
+    const { name, value } = e.target;
+    let fieldsValid = { ...this.state.fieldsValid };
+    let fieldsValues = { ...this.state.fieldsValues };
+    switch (name) {
+      case "account":
+        fieldsValid.account = value.length > 0 && numberValueIsValid(value);
+        break;
+      case "balance":
+        fieldsValid.balance = parseInt(value) > 0;
+        break;
+      default:
+        break;
+    }
 
-  handleAccountsInputChange(e) {
-    const isInputValid = textValueIsValid(e.target.value);
+    fieldsValues[name] = value;
     this.setState({
-      accountInputValue: e.target.value,
-      accountInputIsValid: isInputValid,
+      fieldsValid,
+      fieldsValues,
     });
   }
 
   handleAddToBudget() {
+    let fieldsValid = { ...this.state.fieldsValid };
+    let fieldsValues = { ...this.state.fieldsValues };
+
     this.props.addToBudget(
-      this.state.balanceInputValue,
-      this.state.accountInputValue
+      this.state.fieldsValues.balance,
+      this.state.fieldsValues.account
     );
+
+    fieldsValues.balance = "";
+    fieldsValid.balance = false;
     this.setState({
-      balanceInputValue: "",
-      balanceInputIsValid: false,
+      fieldsValues,
+      fieldsValid,
     });
   }
 
   render() {
     const inputBorder = {
-      border: this.state.balanceInputIsValid ? null : "1px solid red",
+      border: this.state.fieldsValid.balance ? null : "1px solid red",
     };
     return (
       <>
         <h3>Balance</h3>
-        <Input
-          inputValue={this.state.balanceInputValue}
-          onChange={this.handleBalanceInputChange}
-          dataType="number"
+        <label htmlFor="balance">
+          Add to {this.state.fieldsValues.account}
+        </label>
+        <input
+          value={this.state.fieldsValues.balance}
+          onChange={this.handleInputChange}
+          type="number"
+          name="balance"
           style={inputBorder}
+          id="balance"
         />
+        <label htmlFor="balanceAccount">Account: </label>
         <select
-          onChange={this.handleAccountsInputChange}
-          onBlur={this.handleAccountsInputChange}
+          onChange={this.handleInputChange}
+          onBlur={this.handleInputChange}
           value={this.state.accountInputValue}
+          name="account"
+          id="balanceAccount"
         >
           {this.props.accounts.map((account) => (
             <option key={account.name} value={account.name}>
@@ -84,7 +106,7 @@ class Balance extends React.Component {
             </option>
           ))}
         </select>
-        <Button onClick={this.handleAddToBudget} name="Add to budget" />
+        <button onClick={this.handleAddToBudget}>Add to budget</button>
         <p>My Balance: {this.props.balance}$</p>
         <p>Accounts: </p>
         <ul>

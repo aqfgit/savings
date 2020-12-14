@@ -1,34 +1,31 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Input from "../../components/Input";
-import Button from "../../components/Button";
 import {
   getLocalStorageItem,
   getDateFromLocalStorage,
   addDateToLocalStorage,
 } from "../../utils/localStorage";
-import {
-  textValueIsValid,
-  numberValueIsValid,
-} from "../../utils/inputValidation";
+import { numberValueIsValid, formValid } from "../../utils/inputValidation";
 
 class IncomeSources extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       incomes: getLocalStorageItem("incomes") || [],
-      inputName: "",
-      inputValue: "",
-      inputAccounts: "",
       idCounter: 0,
-      valueInputIsValid: false,
-      nameInputIsValid: false,
-      accountInputIsValid: false,
+      fieldsValues: {
+        name: "",
+        value: "",
+        account: "",
+      },
+      fieldsValid: {
+        name: false,
+        value: false,
+        account: false,
+      },
     };
 
-    this.handleValueInputChange = this.handleValueInputChange.bind(this);
-    this.handleNameInputChange = this.handleNameInputChange.bind(this);
-    this.handleAccountsInputChange = this.handleAccountsInputChange.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.addIncome = this.addIncome.bind(this);
   }
 
@@ -40,10 +37,14 @@ class IncomeSources extends React.Component {
     );
 
     const accounts = this.props.accounts;
+    let fieldsValid = { ...this.state.fieldsValid };
+    let fieldsValues = { ...this.state.fieldsValues };
     if (accounts) {
+      fieldsValues.account = accounts[0].name;
+      fieldsValid.account = true;
       this.setState({
-        inputAccounts: accounts[0].name,
-        accountInputIsValid: true,
+        fieldsValues,
+        fieldsValid,
       });
     }
 
@@ -104,64 +105,65 @@ class IncomeSources extends React.Component {
     }
   }
 
-  handleValueInputChange(value) {
-    const isInputValid = numberValueIsValid(value);
-    this.setState({
-      inputValue: value,
-      valueInputIsValid: isInputValid,
-    });
-  }
+  handleInputChange(e) {
+    const { name, value } = e.target;
+    let fieldsValid = { ...this.state.fieldsValid };
+    let fieldsValues = { ...this.state.fieldsValues };
+    switch (name) {
+      case "name":
+        fieldsValid.name = value.length > 0;
+        break;
+      case "value":
+        fieldsValid.value = parseInt(value) > 0 && numberValueIsValid(value);
+        break;
+      case "account":
+        fieldsValid.account = value.length > 0;
+        break;
 
-  handleNameInputChange(name) {
-    const isInputValid = textValueIsValid(name);
+      default:
+        break;
+    }
+    fieldsValues[name] = value;
     this.setState({
-      inputName: name,
-      nameInputIsValid: isInputValid,
-    });
-  }
-
-  handleAccountsInputChange(e) {
-    const isInputValid = textValueIsValid(e.target.value);
-    this.setState({
-      inputAccounts: e.target.value,
-      accountInputIsValid: isInputValid,
+      fieldsValid,
+      fieldsValues,
     });
   }
 
   addIncome() {
-    const value = this.state.inputValue;
+    const value = this.state.fieldsValues.value;
     const intValue = parseInt(value);
 
-    if (
-      !this.state.valueInputIsValid ||
-      !this.state.nameInputIsValid ||
-      !this.state.accountInputIsValid
-    ) {
+    if (!formValid(this.state)) {
       return;
     }
-    const account = this.state.inputAccounts;
+    const account = this.state.fieldsValues.account;
     const interval = setInterval(() => {
       this.props.addToBudget(value, account);
       addDateToLocalStorage("lastIncomeUpadte", new Date());
     }, 1000);
 
     const id = this.state.idCounter;
+    let fieldsValid = { ...this.state.fieldsValid };
+    let fieldsValues = { ...this.state.fieldsValues };
+    (fieldsValues.value = ""),
+      (fieldsValues.name = ""),
+      (fieldsValid.value = false);
+    fieldsValid.name = false;
 
     this.setState((prevState) => ({
       incomes: prevState.incomes.concat({
         id,
-        name: this.state.inputName,
-        account: this.state.inputAccount,
+        name: this.state.fieldsValues.name,
+        account: this.state.fieldsValues.account,
         value: intValue,
         frequency: 1000,
         timeUnit: "second",
         interval: interval,
       }),
       idCounter: id + 1,
-      inputValue: "",
-      inputName: "",
-      valueInputIsValid: false,
-      nameInputIsValid: false,
+      fieldsValues,
+      fieldsValid,
     }));
   }
 
@@ -197,32 +199,41 @@ class IncomeSources extends React.Component {
     });
 
     const valueInputBorder = {
-      border: this.state.valueInputIsValid ? null : "1px solid red",
+      border: this.state.fieldsValid.value ? null : "1px solid red",
     };
 
     const nameInputBorder = {
-      border: this.state.nameInputIsValid ? null : "1px solid red",
+      border: this.state.fieldsValid.name ? null : "1px solid red",
     };
 
     return (
       <>
         <h3>Income sources</h3>
-        <Input
-          inputValue={this.state.inputName}
-          onChange={this.handleNameInputChange}
-          dataType="text"
+        <label htmlFor="incomesName">Name:</label>
+        <input
+          value={this.state.fieldsValues.name}
+          onChange={this.handleInputChange}
+          type="text"
           style={nameInputBorder}
+          id="incomesName"
+          name="name"
         />
-        <Input
-          inputValue={this.state.inputValue}
-          onChange={this.handleValueInputChange}
-          dataType="number"
+        <label htmlFor="incomesValue">Ammount:</label>
+        <input
+          value={this.state.fieldsValues.value}
+          onChange={this.handleInputChange}
+          type="number"
           style={valueInputBorder}
+          id="incomesValue"
+          name="value"
         />
+        <label htmlFor="incomesAccount">Account:</label>
         <select
           value={this.state.inputAccounts}
-          onChange={this.handleAccountsInputChange}
-          onBlur={this.handleAccountsInputChange}
+          onChange={this.handleInputChange}
+          onBlur={this.handleInputChange}
+          id="incomesAccount"
+          name="account"
         >
           {this.props.accounts.map((account) => (
             <option key={account.name} value={account.name}>
@@ -230,7 +241,7 @@ class IncomeSources extends React.Component {
             </option>
           ))}
         </select>
-        <Button onClick={this.addIncome} name="Add income" />
+        <button onClick={this.addIncome}>Add income</button>
         <table>
           <thead>
             <tr>
@@ -247,6 +258,7 @@ class IncomeSources extends React.Component {
 
 IncomeSources.propTypes = {
   addToBudget: PropTypes.func.isRequired,
+  accounts: PropTypes.array.isRequired,
 };
 
 export default IncomeSources;

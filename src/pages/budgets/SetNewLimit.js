@@ -7,18 +7,33 @@ class SetNewLimit extends React.Component {
     super(props);
 
     this.state = {
-      isLimitValid: true,
-      limitValue: 0,
+      fieldsValues: {
+        limit: 0,
+      },
+      fieldsValid: {
+        limit: true,
+      },
     };
 
-    this.handleLimitInputChange = this.handleLimitInputChange.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
   }
 
-  handleLimitInputChange(e) {
-    const isInputValid = numberValueIsValid(e.target.value);
+  handleInputChange(e) {
+    const { name, value } = e.target;
+    let fieldsValid = { ...this.state.fieldsValid };
+    let fieldsValues = { ...this.state.fieldsValues };
+    switch (name) {
+      case "limit":
+        fieldsValid.limit = parseInt(value) >= 0 && numberValueIsValid(value);
+        break;
+      default:
+        break;
+    }
+
+    fieldsValues[name] = value;
     this.setState({
-      limitValue: e.target.value,
-      isLimitValid: isInputValid,
+      fieldsValid,
+      fieldsValues,
     });
   }
 
@@ -31,16 +46,17 @@ class SetNewLimit extends React.Component {
           </label>
           <input
             id={`change${this.props.category.name}Limit`}
+            name="limit"
             type="number"
-            value={this.state.limitValue}
-            onChange={this.handleLimitInputChange}
+            value={this.state.fieldsValues.limit}
+            onChange={this.handleInputChange}
           />
           <button
             onClick={() => {
-              if (!this.state.isLimitValid) return;
+              if (!this.state.fieldsValid.limit) return;
               this.props.changeCategoryLimit(
                 this.props.category.name,
-                this.state.limitValue
+                this.state.fieldsValues.limit
               );
             }}
           >

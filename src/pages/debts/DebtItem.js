@@ -1,7 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Input from "../../components/Input";
-import Button from "../../components/Button";
 import { numberValueIsValid } from "../../utils/inputValidation";
 
 class DebtItem extends React.Component {
@@ -9,27 +7,42 @@ class DebtItem extends React.Component {
     super(props);
 
     this.state = {
-      inputValue: "",
-      valueInputIsValid: false,
+      fieldsValues: {
+        pay: 0,
+      },
+      fieldsValid: {
+        pay: false,
+      },
     };
 
-    this.handleValueInputChange = this.handleValueInputChange.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.handlePayDebt = this.handlePayDebt.bind(this);
   }
 
-  handleValueInputChange(value) {
-    const isInputValid = numberValueIsValid(value);
+  handleInputChange(e) {
+    const { name, value } = e.target;
+    let fieldsValid = { ...this.state.fieldsValid };
+    let fieldsValues = { ...this.state.fieldsValues };
+    switch (name) {
+      case "pay":
+        fieldsValid.pay = parseInt(value) >= 0 && numberValueIsValid(value);
+        break;
+      default:
+        break;
+    }
+
+    fieldsValues[name] = value;
     this.setState({
-      inputValue: value,
-      valueInputIsValid: isInputValid,
+      fieldsValid,
+      fieldsValues,
     });
   }
 
   handlePayDebt() {
-    if (!this.state.valueInputIsValid) {
+    if (!this.state.fieldsValid.pay) {
       return;
     }
-    this.props.payDebt(this.props.id, this.state.inputValue);
+    this.props.payDebt(this.props.id, this.state.fieldsValues.pay);
   }
 
   isDebtPaid(moneyPaid) {
@@ -41,7 +54,7 @@ class DebtItem extends React.Component {
 
   render() {
     const valueInputBorder = {
-      border: this.state.valueInputIsValid ? null : "1px solid red",
+      border: this.state.fieldsValid.pay ? null : "1px solid red",
     };
 
     const moneyPaid = !this.isDebtPaid(this.props.moneyPaid)
@@ -58,24 +71,26 @@ class DebtItem extends React.Component {
         {!this.isDebtPaid(this.props.moneyPaid) && (
           <>
             <td>
-              <Input
-                inputValue={this.state.inputValue}
-                onChange={this.handleValueInputChange}
-                dataType="number"
-                style={valueInputBorder}
+              <label htmlFor={this.props.id}>Pay:</label>
+              <input
+                style={{ valueInputBorder }}
+                id={this.props.id}
+                name="pay"
+                type="number"
+                value={this.state.fieldsValues.pay}
+                onChange={this.handleInputChange}
               />
             </td>
 
             <td>
-              <Button onClick={this.handlePayDebt} name="Pay" />
+              <button onClick={this.handlePayDebt}>Pay</button>
             </td>
           </>
         )}
         <td>
-          <Button
-            onClick={() => this.props.deleteDebt(this.props.id)}
-            name="delete"
-          />
+          <button onClick={() => this.props.deleteDebt(this.props.id)}>
+            Delete
+          </button>
         </td>
       </>
     );

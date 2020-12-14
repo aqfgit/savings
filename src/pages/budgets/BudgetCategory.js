@@ -37,7 +37,7 @@ class BudgetCategory extends React.Component {
           {
             <div>
               Limit:{" "}
-              {this.props.category.limit || this.props.category.limit > 0
+              {this.props.category.limit > 0
                 ? this.props.category.limit
                 : "No limit set"}
               {this.props.category.spent > this.props.category.limit ? (

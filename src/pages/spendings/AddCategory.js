@@ -1,6 +1,7 @@
 import React from "react";
 import Button from "../../components/Button";
 import { CategoriesContext } from "../../global-state/CategoriesContext";
+import { formValid } from "../../utils/inputValidation";
 
 const initialFieldsState = {
   fieldsValues: {
@@ -9,19 +10,6 @@ const initialFieldsState = {
   fieldsValid: {
     newCategory: false,
   },
-};
-
-const formValid = ({ fieldsValid }) => {
-  let valid = true;
-
-  Object.values(fieldsValid).forEach((isValid) => {
-    if (!isValid) {
-      valid = false;
-      return;
-    }
-  });
-
-  return valid;
 };
 
 class AddCategory extends React.Component {

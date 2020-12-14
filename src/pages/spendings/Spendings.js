@@ -7,6 +7,7 @@ import AddCategory from "./AddCategory";
 import { CategoriesContext } from "../../global-state/CategoriesContext";
 import { SpendingsContext } from "../../global-state/SpendingsContext";
 import SpendingsByDate from "./SpendingsByDate";
+import { formValid } from "../../utils/inputValidation";
 
 const initialFieldsState = {
   fieldsValues: {
@@ -25,19 +26,6 @@ const initialFieldsState = {
     category: false,
     account: false,
   },
-};
-
-const formValid = ({ fieldsValid }) => {
-  let valid = true;
-
-  Object.values(fieldsValid).forEach((isValid) => {
-    if (!isValid) {
-      valid = false;
-      return;
-    }
-  });
-
-  return valid;
 };
 
 class Spendings extends React.Component {
@@ -164,21 +152,25 @@ class Spendings extends React.Component {
                   noValidate
                 >
                   <div>
+                    <label htmlFor="expenseName">Name:</label>
                     <input
                       value={this.state.fieldsValues.name}
                       onChange={this.handleInputChange}
                       name="name"
                       type="text"
                       style={nameInputBorder}
+                      id="expenseName"
                     />
                   </div>
                   <div>
+                    <label htmlFor="expenseCategory">Category:</label>
                     <select
                       value={this.state.fieldsValues.category}
                       onChange={this.handleInputChange}
                       onBlur={this.handleInputChange}
                       name="category"
                       style={categoryInputBorder}
+                      id="expenseCategory"
                     >
                       <CategoriesContext.Consumer>
                         {(context) =>
@@ -194,12 +186,14 @@ class Spendings extends React.Component {
                     </select>
                   </div>
                   <div>
+                    <label htmlFor="expenseAccount">Account:</label>
                     <select
                       value={this.state.fieldsValues.account}
                       onChange={this.handleInputChange}
                       onBlur={this.handleInputChange}
                       style={accountsInputBorder}
                       name="account"
+                      id="expenseAccount"
                     >
                       {this.props.accounts.map((account) => (
                         <option key={account.name} value={account.name}>
@@ -209,21 +203,25 @@ class Spendings extends React.Component {
                     </select>
                   </div>
                   <div>
+                    <label htmlFor="expenseSpent">Spent:</label>
                     <input
                       value={this.state.fieldsValues.price}
                       onChange={this.handleInputChange}
                       name="price"
                       type="number"
                       style={priceInputBorder}
+                      id="expenseSpent"
                     />
                   </div>
                   <div>
+                    <label htmlFor="expenseQuantity">Quantity:</label>
                     <input
                       value={this.state.fieldsValues.quantity}
                       onChange={this.handleInputChange}
                       name="quantity"
                       type="number"
                       style={quantityInputBorder}
+                      id="expenseQuantity"
                     />
                   </div>
                   <button type="submit" name="Add an expense">

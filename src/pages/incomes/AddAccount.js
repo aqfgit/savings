@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../../components/Button";
+import { formValid } from "../../utils/inputValidation";
 
 const initialFieldsState = {
   fieldsValues: {
@@ -8,19 +8,6 @@ const initialFieldsState = {
   fieldsValid: {
     newAccount: false,
   },
-};
-
-const formValid = ({ fieldsValid }) => {
-  let valid = true;
-
-  Object.values(fieldsValid).forEach((isValid) => {
-    if (!isValid) {
-      valid = false;
-      return;
-    }
-  });
-
-  return valid;
 };
 
 class AddAccount extends React.Component {
@@ -62,12 +49,13 @@ class AddAccount extends React.Component {
         <div style={{ border: "4px solid green" }}>
           <span>
             Add account
-            <Button
+            <button
               onClick={() =>
                 this.setState((prevState) => ({ isOpen: !prevState.isOpen }))
               }
-              name={this.state.isOpen ? "-" : "+"}
-            />
+            >
+              {this.state.isOpen ? "-" : "+"}
+            </button>
           </span>
           {this.state.isOpen && (
             <>
@@ -75,10 +63,9 @@ class AddAccount extends React.Component {
                 {this.props.accounts.map((item) => (
                   <li key={item.name + "id"}>
                     {item.name}{" "}
-                    <Button
-                      onClick={() => this.props.removeAccount(item.name)}
-                      name="delete"
-                    />
+                    <button onClick={() => this.props.removeAccount(item.name)}>
+                      Delete
+                    </button>
                   </li>
                 ))}
               </div>
@@ -106,13 +93,14 @@ class AddAccount extends React.Component {
                     }}
                     noValidate
                   >
-                    <label htmlFor="account">New account</label>
+                    <label htmlFor="newAccount">New account</label>
                     <input
                       noValidate
                       value={this.state.fieldsValues.newAccount}
                       onChange={this.handleInputChange}
                       type="text"
                       name="newAccount"
+                      id="newAccount"
                       style={{
                         border: showNewAccountError ? "1px solid red" : null,
                       }}
