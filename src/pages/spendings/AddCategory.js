@@ -1,6 +1,7 @@
 import React from "react";
 import { CategoriesContext } from "../../global-state/CategoriesContext";
 import { formValid } from "../../utils/inputValidation";
+import { PieChart, Pie } from "recharts";
 
 const initialFieldsState = {
   fieldsValues: {
@@ -62,18 +63,34 @@ class AddCategory extends React.Component {
             <>
               <div>
                 <CategoriesContext.Consumer>
-                  {(context) =>
-                    context.state.categories.map((item) => (
-                      <li key={item.name + "id"}>
-                        {item.name}{" "}
-                        <button
-                          onClick={() => context.removeCategory(item.name)}
-                        >
-                          Delete
-                        </button>
-                      </li>
-                    ))
-                  }
+                  {(context) => {
+                    return (
+                      <>
+                        {context.state.categories.map((item) => (
+                          <li key={item.name + "id"}>
+                            {item.name}{" "}
+                            <button
+                              onClick={() => context.removeCategory(item.name)}
+                            >
+                              Delete
+                            </button>
+                          </li>
+                        ))}
+                        <PieChart width={400} height={250}>
+                          <Pie
+                            label={(entry) => entry.name}
+                            dataKey="spent"
+                            isAnimationActive={false}
+                            data={context.state.categories}
+                            cx={200}
+                            cy={140}
+                            outerRadius={80}
+                            fill="#8884d8"
+                          />
+                        </PieChart>
+                      </>
+                    );
+                  }}
                 </CategoriesContext.Consumer>
               </div>
               <div>

@@ -143,7 +143,8 @@ class Spendings extends React.Component {
                       context.addExpense(this.state.fieldsValues);
                       categoriesContext.addToCategorySpent(
                         this.state.fieldsValues.category,
-                        this.state.fieldsValues.price
+                        this.state.fieldsValues.price *
+                          this.state.fieldsValues.quantity
                       );
                     } else {
                       console.log("INVALID FORM");
