@@ -36,6 +36,27 @@ class IncomeSources extends React.Component {
     this.addIncome = this.addIncome.bind(this);
   }
 
+  incomesAccountForTimeOffline() {
+    const lastTime = getDateFromLocalStorage("lastIncomeUpadte") || new Date();
+    const timeDiff = Math.round((new Date() - lastTime) / 1000) || 1;
+
+    this.state.incomes.forEach((item) => {
+      this.props.addToBudget(timeDiff * item.value, item.account);
+
+      const incomes = this.state.incomes.slice();
+      const currentIncome = incomes.find((income) => income.name === item.name);
+      const interval = setInterval(() => {
+        this.props.addToBudget(item.value, item.account);
+        addDateToLocalStorage("lastIncomeUpadte", new Date());
+      }, item.frequency);
+
+      currentIncome.interval = interval;
+      this.setState(() => ({
+        incomes: incomes,
+      }));
+    });
+  }
+
   componentDidMount() {
     this.updateStateWithLocalStorage();
     window.addEventListener(
@@ -55,24 +76,7 @@ class IncomeSources extends React.Component {
       });
     }
 
-    const lastTime = getDateFromLocalStorage("lastIncomeUpadte") || new Date();
-    const timeDiff = Math.round((new Date() - lastTime) / 1000) || 1;
-
-    this.state.incomes.forEach((item) => {
-      this.props.addToBudget(timeDiff * item.value, item.account);
-
-      const incomes = this.state.incomes.slice();
-      const currentIncome = incomes.find((income) => income.name === item.name);
-      const interval = setInterval(() => {
-        this.props.addToBudget(item.value, item.account);
-        addDateToLocalStorage("lastIncomeUpadte", new Date());
-      }, item.frequency);
-
-      currentIncome.interval = interval;
-      this.setState(() => ({
-        incomes: incomes,
-      }));
-    });
+    this.incomesAccountForTimeOffline();
   }
 
   componentWillUnmount() {

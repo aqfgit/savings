@@ -29,7 +29,7 @@ class BalanceController extends React.Component {
     this.isNameDuplicate = this.isNameDuplicate.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.updateStateWithLocalStorage();
     window.addEventListener("beforeunload", () => {
       this.saveStateToLocalStorage().bind(this);
@@ -40,7 +40,6 @@ class BalanceController extends React.Component {
     window.removeEventListener("beforeunload", () => {
       this.saveStateToLocalStorage().bind(this);
     });
-    console.log(this.state);
 
     this.saveStateToLocalStorage();
   }

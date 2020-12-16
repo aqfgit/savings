@@ -37,7 +37,7 @@ class SpendingsByDate extends React.Component {
                         );
                         this.props.addToCategorySpent(
                           item.category,
-                          -item.price
+                          -item.price * item.quantity
                         );
                       }}
                     >

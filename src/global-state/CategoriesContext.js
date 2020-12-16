@@ -24,7 +24,7 @@ class CategoriesProvider extends React.Component {
     this.setBudgetLimitReset = this.setBudgetLimitReset.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.updateStateWithLocalStorage();
     window.addEventListener(
       "beforeunload",
@@ -76,9 +76,7 @@ class CategoriesProvider extends React.Component {
       const categories = state.categories.slice();
       const updatedCategories = categories.map((cat) => {
         if (cat.name === name) {
-          const catCopy = Object.assign({}, cat);
-          catCopy.spent += parseInt(money);
-          return catCopy;
+          return { ...cat, spent: cat.spent + parseInt(money) };
         }
         return cat;
       });
@@ -91,9 +89,7 @@ class CategoriesProvider extends React.Component {
       const categories = state.categories.slice();
       const updatedCategories = categories.map((cat) => {
         if (cat.name === name) {
-          const catCopy = Object.assign({}, cat);
-          catCopy.limit = newLimit;
-          return catCopy;
+          return { ...cat, limit: newLimit };
         }
         return cat;
       });
@@ -106,9 +102,7 @@ class CategoriesProvider extends React.Component {
       const categories = state.categories.slice();
       const updatedCategories = categories.map((cat) => {
         if (cat.name === name) {
-          const catCopy = Object.assign({}, cat);
-          catCopy.monthlyBudgetReset = bool;
-          return catCopy;
+          return { ...cat, monthlyBudgetReset: bool };
         }
         return cat;
       });
@@ -121,9 +115,7 @@ class CategoriesProvider extends React.Component {
       const categories = state.categories.slice();
       const updatedCategories = categories.map((cat) => {
         if (cat.name === name) {
-          const catCopy = Object.assign({}, cat);
-          catCopy.spent = 0;
-          return catCopy;
+          return { ...cat, spent: 0 };
         }
         return cat;
       });
